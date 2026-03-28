@@ -1,3 +1,15 @@
+'use client'
+
+import { useAuthStore } from '@/stores/authStore'
+
 export function useAuth() {
-  return null
+  const { isAuthenticated, isLoading, login, logout, user } = useAuthStore()
+
+  return {
+    isAuthenticated,
+    isLoading,
+    login,
+    logout,
+    user,
+  }
 }
