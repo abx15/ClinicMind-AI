@@ -11,6 +11,10 @@ import hospitalRoutes from './routes/hospital.routes'
 import doctorRoutes from './routes/doctor.routes'
 import patientRoutes from './routes/patient.routes'
 import staffRoutes from './routes/staff.routes'
+import appointmentRoutes from './routes/appointment.routes'
+import queueRoutes from './routes/queue.routes'
+import prescriptionRoutes from './routes/prescription.routes'
+import { registerSocketHandlers } from './socket'
 
 const app = express()
 const httpServer = createServer(app)
@@ -34,12 +38,7 @@ export const io = new Server(httpServer, {
   },
 })
 
-io.on('connection', (socket) => {
-  console.log(`🔌 Socket connected: ${socket.id}`)
-  socket.on('disconnect', () => {
-    console.log(`🔌 Socket disconnected: ${socket.id}`)
-  })
-})
+registerSocketHandlers(io)
 
 // Health check
 app.get('/health', (req, res) => {
@@ -57,6 +56,9 @@ app.use('/api/v1/hospitals', hospitalRoutes)
 app.use('/api/v1/doctors', doctorRoutes)
 app.use('/api/v1/patients', patientRoutes)
 app.use('/api/v1/staff', staffRoutes)
+app.use('/api/v1/appointments', appointmentRoutes)
+app.use('/api/v1/queue', queueRoutes)
+app.use('/api/v1/prescriptions', prescriptionRoutes)
 
 // 404 handler
 app.use((req, res) => {

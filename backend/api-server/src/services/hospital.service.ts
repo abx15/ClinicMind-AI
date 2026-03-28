@@ -228,12 +228,12 @@ export class HospitalService {
       }
 
       // Check permissions
-      if (requestingUser.role === UserRole.HOSPITAL_ADMIN) {
+      if (requestingUser.role === 'hospital_admin') {
         // Hospital admin can only update their own hospital
         if (hospital.adminUserId.toString() !== requestingUser._id.toString()) {
           throw new Error('Access denied');
         }
-      } else if (requestingUser.role !== UserRole.SUPERADMIN) {
+      } else if (requestingUser.role !== 'superadmin') {
         throw new Error('Access denied');
       }
 
