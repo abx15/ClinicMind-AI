@@ -1,0 +1,14 @@
+{
+  "name": "clinicmind",
+  "private": true,
+  "packageManager": "pnpm@10.26.1",
+  "scripts": {
+    "dev": "turbo dev --filter=@clinicmind/patient-app --filter=@clinicmind/hospital-app --filter=@clinicmind/admin-app --filter=@clinicmind/api-server",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "latest",
+    "typescript": "^5"
+  }
+}
