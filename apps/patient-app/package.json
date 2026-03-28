@@ -1,0 +1,25 @@
+{
+  "name": "@clinicmind/patient-app",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@clinicmind/types": "workspace:*",
+    "@clinicmind/ui": "workspace:*",
+    "@clinicmind/config": "workspace:*",
+    "next": "15.0.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "socket.io-client": "^4",
+    "axios": "^1",
+    "zustand": "^4"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "tailwindcss": "^3",
+    "@types/react": "^18"
+  }
+}
