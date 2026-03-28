@@ -7,6 +7,10 @@ import { connectDB } from './config/db'
 import { env } from './config/env'
 import { errorHandler } from './middlewares/errorHandler'
 import { authRoutes } from './routes/auth.routes'
+import hospitalRoutes from './routes/hospital.routes'
+import doctorRoutes from './routes/doctor.routes'
+import patientRoutes from './routes/patient.routes'
+import staffRoutes from './routes/staff.routes'
 
 const app = express()
 const httpServer = createServer(app)
@@ -49,6 +53,10 @@ app.get('/health', (req, res) => {
 
 // Routes
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/hospitals', hospitalRoutes)
+app.use('/api/v1/doctors', doctorRoutes)
+app.use('/api/v1/patients', patientRoutes)
+app.use('/api/v1/staff', staffRoutes)
 
 // 404 handler
 app.use((req, res) => {

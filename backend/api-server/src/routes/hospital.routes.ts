@@ -1,65 +1,63 @@
 import { Router } from 'express';
 import { HospitalController } from '../controllers/hospital.controller';
-import { authenticate } from '../middlewares/auth';
-import { roleGuard } from '../middlewares/roleGuard';
+import { authenticate, requireRole } from '../middlewares/auth';
 import { tenantGuard } from '../middlewares/tenantGuard';
-import { UserRole } from '../models/User.model';
 
 const router = Router();
 
 // Public routes (no auth required)
 router.get('/', HospitalController.getPublicHospitals);
-router.get('/:slug', HospitalController.getHospitalBySlug);
+router.get('/:slug([a-zA-Z0-9-]+)', HospitalController.getHospitalBySlug);
 
 // Hospital Admin routes (auth + hospital_admin role required)
 router.post('/register', 
   authenticate, 
-  roleGuard(UserRole.HOSPITAL_ADMIN), 
+  requireRole('hospital_admin'), 
   HospitalController.registerHospital
 );
 
 router.put('/:id', 
   authenticate, 
-  roleGuard(UserRole.HOSPITAL_ADMIN), 
-  tenantGuard('hospital', 'id'), 
+  requireRole('hospital_admin'), 
+  tenantGuard, 
   HospitalController.updateHospital
 );
 
 router.get('/:id/dashboard', 
   authenticate, 
-  roleGuard(UserRole.HOSPITAL_ADMIN), 
-  tenantGuard('hospital', 'id'), 
+  requireRole('hospital_admin'), 
+  tenantGuard, 
   HospitalController.getHospitalDashboard
 );
 
 // Superadmin routes (auth + superadmin role required)
 router.get('/admin/hospitals', 
   authenticate, 
-  roleGuard(UserRole.SUPERADMIN), 
+  requireRole('superadmin'), 
   HospitalController.getAllHospitalsAdmin
 );
 
 router.get('/admin/hospitals/:id', 
   authenticate, 
-  roleGuard(UserRole.SUPERADMIN), 
+  requireRole('superadmin'), 
   HospitalController.getHospitalById
 );
 
 router.patch('/admin/hospitals/:id/approve', 
   authenticate, 
-  roleGuard(UserRole.SUPERADMIN), 
+  requireRole('superadmin'), 
   HospitalController.approveHospital
 );
 
 router.patch('/admin/hospitals/:id/reject', 
   authenticate, 
-  roleGuard(UserRole.SUPERADMIN), 
+  requireRole('superadmin'), 
   HospitalController.rejectHospital
 );
 
 router.patch('/admin/hospitals/:id/suspend', 
   authenticate, 
-  roleGuard(UserRole.SUPERADMIN), 
+  requireRole('superadmin'), 
   HospitalController.suspendHospital
 );
 

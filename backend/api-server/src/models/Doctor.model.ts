@@ -10,6 +10,7 @@ export interface IDoctor extends Document {
   photo?: string
   bio?: string
   consultationFee: number
+  availableSlots: Array<{ day: string; startTime: string; endTime: string }>
   isVerified: boolean
   isPublic: boolean
   verifiedBy?: mongoose.Types.ObjectId
@@ -28,6 +29,7 @@ const DoctorSchema = new Schema<IDoctor>({
   photo:           { type: String },
   bio:             { type: String },
   consultationFee: { type: Number, default: 0 },
+  availableSlots:  [{ day: String, startTime: String, endTime: String }],
   isVerified:      { type: Boolean, default: false },
   isPublic:        { type: Boolean, default: false },
   verifiedBy:      { type: Schema.Types.ObjectId, ref: 'User' },
@@ -38,6 +40,6 @@ const DoctorSchema = new Schema<IDoctor>({
 
 DoctorSchema.index({ hospitalId: 1, isVerified: 1 })
 DoctorSchema.index({ hospitalId: 1, isPublic: 1 })
-DoctorSchema.index({ specialization: 1 })
+DoctorSchema.index({ userId: 1 })
 
 export const Doctor = mongoose.model<IDoctor>('Doctor', DoctorSchema)
