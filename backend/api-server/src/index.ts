@@ -14,6 +14,9 @@ import staffRoutes from './routes/staff.routes'
 import appointmentRoutes from './routes/appointment.routes'
 import queueRoutes from './routes/queue.routes'
 import prescriptionRoutes from './routes/prescription.routes'
+import whatsappRoutes from './routes/whatsapp.routes'
+import aiRoutes from './routes/ai.routes'
+import billingRoutes from './routes/billing.routes'
 import { registerSocketHandlers } from './socket'
 
 const app = express()
@@ -59,6 +62,9 @@ app.use('/api/v1/staff', staffRoutes)
 app.use('/api/v1/appointments', appointmentRoutes)
 app.use('/api/v1/queue', queueRoutes)
 app.use('/api/v1/prescriptions', prescriptionRoutes)
+app.use('/api/v1/whatsapp', whatsappRoutes)
+app.use('/api/v1/ai', aiRoutes)
+app.use('/api/v1/billing', billingRoutes)
 
 // 404 handler
 app.use((req, res) => {

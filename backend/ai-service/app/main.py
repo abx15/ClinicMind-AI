@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import os
 from contextlib import asynccontextmanager
 from app.config import connect_to_mongo
+from app.routes import triage, prescription, drug_check, analytics
 
 load_dotenv()
 
@@ -32,4 +33,8 @@ app.add_middleware(
 def health():
     return {"status": "ok", "service": "ai-service"}
 
-# Routes will be added here
+# Include all routers with prefix
+app.include_router(triage.router, prefix="/api/v1")
+app.include_router(prescription.router, prefix="/api/v1")
+app.include_router(drug_check.router, prefix="/api/v1")
+app.include_router(analytics.router, prefix="/api/v1")

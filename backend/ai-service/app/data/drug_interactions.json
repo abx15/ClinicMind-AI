@@ -1,0 +1,124 @@
+{
+  "interactions": [
+    {
+      "drugs": ["Amlodipine", "Atenolol"],
+      "severity": "moderate",
+      "description": "Combination may cause additive hypotensive effects and bradycardia",
+      "recommendation": "Monitor blood pressure and heart rate closely"
+    },
+    {
+      "drugs": ["Warfarin", "Aspirin"],
+      "severity": "severe",
+      "description": "Increased risk of bleeding due to additive antiplatelet effects",
+      "recommendation": "Avoid combination if possible, monitor INR and signs of bleeding"
+    },
+    {
+      "drugs": ["Metformin", "Alcohol"],
+      "severity": "moderate",
+      "description": "Increased risk of lactic acidosis, especially with chronic alcohol use",
+      "recommendation": "Limit alcohol consumption and monitor renal function"
+    },
+    {
+      "drugs": ["Lisinopril", "Potassium"],
+      "severity": "moderate",
+      "description": "Increased risk of hyperkalemia",
+      "recommendation": "Monitor serum potassium levels, avoid potassium supplements"
+    },
+    {
+      "drugs": ["Simvastatin", "Clarithromycin"],
+      "severity": "severe",
+      "description": "Increased risk of myopathy and rhabdomyolysis",
+      "recommendation": "Avoid combination, use alternative antibiotic"
+    },
+    {
+      "drugs": ["Digoxin", "Amiodarone"],
+      "severity": "severe",
+      "description": "Increased digoxin levels leading to toxicity",
+      "recommendation": "Reduce digoxin dose by 50% and monitor levels"
+    },
+    {
+      "drugs": ["Phenytoin", "Carbamazepine"],
+      "severity": "moderate",
+      "description": "Mutual metabolism interference leading to unpredictable levels",
+      "recommendation": "Monitor drug levels and adjust doses accordingly"
+    },
+    {
+      "drugs": ["Tramadol", "SSRIs"],
+      "severity": "severe",
+      "description": "Increased risk of serotonin syndrome",
+      "recommendation": "Avoid combination, use alternative analgesic"
+    },
+    {
+      "drugs": ["Clopidogrel", "Omeprazole"],
+      "severity": "moderate",
+      "description": "Reduced effectiveness of clopidogrel",
+      "recommendation": "Use alternative PPI like pantoprazole"
+    },
+    {
+      "drugs": ["Statins", "Grapefruit"],
+      "severity": "mild",
+      "description": "Increased statin levels due to CYP3A4 inhibition",
+      "recommendation": "Avoid grapefruit consumption or use lower statin dose"
+    },
+    {
+      "drugs": ["MAOIs", "Tyramine-rich foods"],
+      "severity": "severe",
+      "description": "Hypertensive crisis",
+      "recommendation": "Strict dietary restriction of tyramine-containing foods"
+    },
+    {
+      "drugs": ["Theophylline", "Ciprofloxacin"],
+      "severity": "severe",
+      "description": "Increased theophylline levels leading to toxicity",
+      "recommendation": "Avoid combination or reduce theophylline dose"
+    },
+    {
+      "drugs": ["Oral contraceptives", "Antibiotics"],
+      "severity": "mild",
+      "description": "Reduced contraceptive effectiveness",
+      "recommendation": "Use additional contraception during antibiotic course"
+    },
+    {
+      "drugs": ["NSAIDs", "Diuretics"],
+      "severity": "moderate",
+      "description": "Increased risk of renal impairment",
+      "recommendation": "Monitor renal function and hydration status"
+    },
+    {
+      "drugs": ["Beta-blockers", "Insulin"],
+      "severity": "mild",
+      "description": "Masked hypoglycemia symptoms",
+      "recommendation": "Monitor blood glucose more frequently"
+    },
+    {
+      "drugs": ["Antihistamines", "Alcohol"],
+      "severity": "mild",
+      "description": "Increased CNS depression",
+      "recommendation": "Avoid alcohol or use with caution"
+    },
+    {
+      "drugs": ["Levothyroxine", "Calcium supplements"],
+      "severity": "mild",
+      "description": "Reduced levothyroxine absorption",
+      "recommendation": "Take levothyroxine 4 hours apart from calcium"
+    },
+    {
+      "drugs": ["Benzodiazepines", "Alcohol"],
+      "severity": "severe",
+      "description": "Severe CNS depression and respiratory depression",
+      "recommendation": "Strictly avoid alcohol while taking benzodiazepines"
+    },
+    {
+      "drugs": ["Quinolones", "Antacids"],
+      "severity": "moderate",
+      "description": "Reduced antibiotic absorption",
+      "recommendation": "Take quinolones 2 hours before or after antacids"
+    },
+    {
+      "drugs": ["Ketoconazole", "Statins"],
+      "severity": "severe",
+      "description": "Increased risk of myopathy and rhabdomyolysis",
+      "recommendation": "Avoid combination or use alternative antifungal"
+    }
+  ]
+}
