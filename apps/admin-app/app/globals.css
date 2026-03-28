@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'DM Sans', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
+  }
+}
+
+:root {
+  --color-primary: #0F6E56;
+  --color-primary-dark: #094D3C;
+  --color-primary-light: #E1F5EE;
+  --color-accent: #1D63B5;
+  --color-accent-light: #E6F1FB;
+  --color-amber: #B86E0A;
+  --color-amber-light: #FEF3E2;
+  --color-red: #A32D2D;
+  --color-red-light: #FCEBEB;
+  --color-purple: #534AB7;
+  --color-purple-light: #EEEDFE;
+  --color-sidebar: #0B2920;
+  --color-text-primary: #1A2420;
+  --color-text-secondary: #4A5E58;
+  --color-text-muted: #8A9E98;
+  --color-border: #E2E8E4;
+  --color-background: #F4F6F4;
+  --color-card: #FFFFFF;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

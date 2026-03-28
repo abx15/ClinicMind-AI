@@ -1,3 +1,12 @@
+import './globals.css'
+import type { Metadata } from 'next'
+import Providers from '@/providers'
+
+export const metadata: Metadata = {
+  title: 'ClinicMind Admin - Super Admin Portal',
+  description: 'ClinicMind AI Platform - Super Admin Control Panel',
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -5,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   )
 }
