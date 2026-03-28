@@ -6,7 +6,7 @@ export interface IUser extends Document {
   name: string
   email: string
   phone: string
-  passwordHash: string
+  passwordHash?: string
   role: UserRole
   hospitalId: mongoose.Types.ObjectId | null
   isVerified: boolean
@@ -20,7 +20,7 @@ const UserSchema = new Schema<IUser>({
   name:         { type: String, required: true, trim: true },
   email:        { type: String, required: true, unique: true, lowercase: true, trim: true },
   phone:        { type: String, required: true, trim: true },
-  passwordHash: { type: String, required: true },
+  passwordHash: { type: String, required: false },
   role:         {
     type: String,
     enum: ['superadmin','hospital_admin','doctor','staff','patient'],

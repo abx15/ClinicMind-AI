@@ -182,12 +182,7 @@ export class HospitalService {
         slug, 
         status: 'verified' 
       })
-        .populate('adminUserId', 'name email phone')
-        .populate({
-          path: 'doctors',
-          match: { isVerified: true, isPublic: true },
-          select: 'name specialization qualifications experience photo bio',
-        });
+        .populate('adminUserId', 'name email phone');
 
       if (!hospital) {
         throw new Error('Hospital not found');

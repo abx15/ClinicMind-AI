@@ -66,8 +66,8 @@ router.get('/',
       if (hospitalId) {
         doctors = await doctorService.getDoctorsByHospital(hospitalId as string, filters, false)
       } else {
-        // For public endpoint without hospitalId, return empty array for now
-        doctors = []
+        // For public endpoint without hospitalId, get all verified+public doctors
+        doctors = await doctorService.getPublicDoctors(filters)
       }
 
       res.status(200).json({
@@ -91,6 +91,47 @@ router.get('/hospitals/:hospitalId/doctors',
       res.status(200).json({
         success: true,
         data: doctors
+      })
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        error: error.message
+      })
+    }
+  }
+)
+
+// GET /doctors/me — authenticated doctor only (own profile) - must come before /:id
+router.get('/me',
+  authenticate,
+  requireRole('doctor'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const doctor = await doctorService.getMyDoctorProfile(req.user!.userId)
+      res.status(200).json({
+        success: true,
+        data: doctor
+      })
+    } catch (error: any) {
+      res.status(404).json({
+        success: false,
+        error: error.message
+      })
+    }
+  }
+)
+
+// PUT /doctors/me — authenticated doctor only (update own profile) - must come before /:id
+router.put('/me',
+  authenticate,
+  requireRole('doctor'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const doctor = await doctorService.updateMyDoctorProfile(req.user!.userId, req.body)
+      res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully',
+        data: doctor
       })
     } catch (error: any) {
       res.status(400).json({
@@ -175,47 +216,6 @@ router.delete('/:id',
       })
     } catch (error: any) {
       res.status(403).json({
-        success: false,
-        error: error.message
-      })
-    }
-  }
-)
-
-// GET /doctors/me — authenticated doctor only (own profile)
-router.get('/me',
-  authenticate,
-  requireRole('doctor'),
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const doctor = await doctorService.getMyDoctorProfile(req.user!.userId)
-      res.status(200).json({
-        success: true,
-        data: doctor
-      })
-    } catch (error: any) {
-      res.status(404).json({
-        success: false,
-        error: error.message
-      })
-    }
-  }
-)
-
-// PUT /doctors/me — authenticated doctor only (update own profile)
-router.put('/me',
-  authenticate,
-  requireRole('doctor'),
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const doctor = await doctorService.updateMyDoctorProfile(req.user!.userId, req.body)
-      res.status(200).json({
-        success: true,
-        message: 'Profile updated successfully',
-        data: doctor
-      })
-    } catch (error: any) {
-      res.status(400).json({
         success: false,
         error: error.message
       })

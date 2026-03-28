@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { aiService } from '../services/ai.service';
-import { authenticateToken } from '../middleware/auth';
-import { requireRole } from '../middleware/roleCheck';
+import { authenticate } from '../middlewares/auth';
+import { requireRole } from '../middlewares/role';
 import multer from 'multer';
 
 // Configure multer for file uploads
@@ -22,7 +22,7 @@ const upload = multer({
 const router = Router();
 
 // POST /ai/triage - Symptom triage (doctor or staff only)
-router.post('/triage', authenticateToken, requireRole('doctor', 'staff'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/triage', authenticate, requireRole('doctor', 'staff'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { symptoms, age, gender } = req.body;
 
@@ -42,7 +42,7 @@ router.post('/triage', authenticateToken, requireRole('doctor', 'staff'), async 
 });
 
 // POST /ai/prescription/voice - Voice prescription (doctor only)
-router.post('/prescription/voice', authenticateToken, requireRole('doctor'), upload.single('audio'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/prescription/voice', authenticate, requireRole('doctor'), upload.single('audio'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Audio file is required' });
@@ -56,7 +56,7 @@ router.post('/prescription/voice', authenticateToken, requireRole('doctor'), upl
 });
 
 // POST /ai/drug-check - Drug interaction check (doctor only)
-router.post('/drug-check', authenticateToken, requireRole('doctor'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/drug-check', authenticate, requireRole('doctor'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { medications } = req.body;
 
@@ -72,7 +72,7 @@ router.post('/drug-check', authenticateToken, requireRole('doctor'), async (req:
 });
 
 // GET /ai/analytics/demand - Demand analytics (hospital_admin only)
-router.get('/analytics/demand', authenticateToken, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/analytics/demand', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { hospitalId } = req.query;
     const { days = 30 } = req.query;
@@ -88,7 +88,7 @@ router.get('/analytics/demand', authenticateToken, requireRole('hospital_admin')
 });
 
 // GET /ai/analytics/platform - Platform analytics (superadmin only)
-router.get('/analytics/platform', authenticateToken, requireRole('superadmin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/analytics/platform', authenticate, requireRole('superadmin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await aiService.getPlatformAnalytics(req.user.role);
     res.json(result);

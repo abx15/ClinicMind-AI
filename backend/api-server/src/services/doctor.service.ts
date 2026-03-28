@@ -219,6 +219,23 @@ export const doctorService = {
     return { success: true }
   },
 
+  async getPublicDoctors(filters: any = {}) {
+    const query: any = {
+      isVerified: true,
+      isPublic: true
+    }
+
+    if (filters.specialization) {
+      query.specialization = filters.specialization
+    }
+
+    const doctors = await Doctor.find(query)
+      .populate('userId', 'name email phone')
+      .sort({ createdAt: -1 })
+
+    return doctors
+  },
+
   async getDoctorsByHospital(hospitalId: string, filters: any = {}, forAdmin = false) {
     const query: any = { hospitalId }
     

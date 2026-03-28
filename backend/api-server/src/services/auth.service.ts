@@ -70,6 +70,10 @@ export const authService = {
       throw { status: 403, message: 'Account has been deactivated. Contact support.' }
     }
 
+    if (!user.passwordHash) {
+      throw { status: 401, message: 'Please set up your password first' }
+    }
+
     const isMatch = await bcrypt.compare(password, user.passwordHash)
     if (!isMatch) {
       throw { status: 401, message: 'Invalid email or password' }

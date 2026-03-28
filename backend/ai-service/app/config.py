@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "")
+MONGO_URI = os.getenv("MONGODB_URL", "")
 MONGO_URI_FALLBACK = os.getenv("MONGO_URI_FALLBACK", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")

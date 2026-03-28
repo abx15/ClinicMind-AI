@@ -7,30 +7,8 @@ const router = Router();
 
 // Public routes (no auth required)
 router.get('/', HospitalController.getPublicHospitals);
-router.get('/:slug([a-zA-Z0-9-]+)', HospitalController.getHospitalBySlug);
 
-// Hospital Admin routes (auth + hospital_admin role required)
-router.post('/register', 
-  authenticate, 
-  requireRole('hospital_admin'), 
-  HospitalController.registerHospital
-);
-
-router.put('/:id', 
-  authenticate, 
-  requireRole('hospital_admin'), 
-  tenantGuard, 
-  HospitalController.updateHospital
-);
-
-router.get('/:id/dashboard', 
-  authenticate, 
-  requireRole('hospital_admin'), 
-  tenantGuard, 
-  HospitalController.getHospitalDashboard
-);
-
-// Superadmin routes (auth + superadmin role required)
+// Superadmin routes (auth + superadmin role required) - must come before :slug
 router.get('/admin/hospitals', 
   authenticate, 
   requireRole('superadmin'), 
@@ -59,6 +37,30 @@ router.patch('/admin/hospitals/:id/suspend',
   authenticate, 
   requireRole('superadmin'), 
   HospitalController.suspendHospital
+);
+
+// Hospital by slug route (must come after admin routes)
+router.get('/:slug([a-zA-Z0-9-]+)', HospitalController.getHospitalBySlug);
+
+// Hospital Admin routes (auth + hospital_admin role required)
+router.post('/register', 
+  authenticate, 
+  requireRole('hospital_admin'), 
+  HospitalController.registerHospital
+);
+
+router.put('/:id', 
+  authenticate, 
+  requireRole('hospital_admin'), 
+  tenantGuard, 
+  HospitalController.updateHospital
+);
+
+router.get('/:id/dashboard', 
+  authenticate, 
+  requireRole('hospital_admin'), 
+  tenantGuard, 
+  HospitalController.getHospitalDashboard
 );
 
 export default router;

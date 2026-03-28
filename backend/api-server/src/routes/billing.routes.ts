@@ -1,12 +1,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { billingService } from '../services/billing.service';
-import { authenticateToken } from '../middleware/auth';
-import { requireRole } from '../middleware/roleCheck';
+import { authenticate } from '../middlewares/auth';
+import { requireRole } from '../middlewares/role';
 
 const router = Router();
 
 // POST /billing/subscribe - Create subscription (hospital_admin only)
-router.post('/subscribe', authenticateToken, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/subscribe', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { plan } = req.body;
     const hospitalId = req.user.hospitalId;
@@ -23,7 +23,7 @@ router.post('/subscribe', authenticateToken, requireRole('hospital_admin'), asyn
 });
 
 // GET /billing/subscription - Get current subscription (hospital_admin only)
-router.get('/subscription', authenticateToken, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/subscription', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const hospitalId = req.user.hospitalId;
     const subscription = await billingService.getSubscription(hospitalId);
@@ -48,7 +48,7 @@ router.post('/webhook', async (req: Request, res: Response, next: NextFunction) 
 });
 
 // POST /billing/cancel - Cancel subscription (hospital_admin only)
-router.post('/cancel', authenticateToken, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/cancel', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const hospitalId = req.user.hospitalId;
     const result = await billingService.cancelSubscription(hospitalId);
