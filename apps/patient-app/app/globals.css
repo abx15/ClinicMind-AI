@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 244 246 244;
+    --foreground: 26 36 32;
+    --card: 255 255 255;
+    --card-foreground: 26 36 32;
+    --popover: 255 255 255;
+    --popover-foreground: 26 36 32;
+    --primary: 15 110 86;
+    --primary-foreground: 255 255 255;
+    --secondary: 225 245 238;
+    --secondary-foreground: 15 110 86;
+    --muted: 138 158 152;
+    --muted-foreground: 74 94 88;
+    --accent: 29 99 181;
+    --accent-foreground: 255 255 255;
+    --destructive: 163 45 45;
+    --destructive-foreground: 255 255 255;
+    --border: 226 232 228;
+    --input: 226 232 228;
+    --ring: 15 110 86;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 11 41 32;
+    --foreground: 225 245 238;
+    --card: 11 41 32;
+    --card-foreground: 225 245 238;
+    --popover: 11 41 32;
+    --popover-foreground: 225 245 238;
+    --primary: 225 245 238;
+    --primary-foreground: 15 110 86;
+    --secondary: 15 110 86;
+    --secondary-foreground: 225 245 238;
+    --muted: 74 94 88;
+    --muted-foreground: 138 158 152;
+    --accent: 29 99 181;
+    --accent-foreground: 255 255 255;
+    --destructive: 163 45 45;
+    --destructive-foreground: 255 255 255;
+    --border: 74 94 88;
+    --input: 74 94 88;
+    --ring: 225 245 238;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-500 text-white px-6 py-3 rounded-button font-medium hover:bg-primary-600 transition-colors;
+  }
+  
+  .btn-outline {
+    @apply border border-primary-500 text-primary-500 px-6 py-3 rounded-button font-medium hover:bg-primary-50 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground px-6 py-3 rounded-button font-medium hover:bg-secondary/80 transition-colors;
+  }
+  
+  .card {
+    @apply bg-card rounded-card shadow-sm border border-border;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 rounded-component border border-border bg-card text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  
+  .skeleton {
+    @apply animate-pulse bg-border;
+  }
+}
