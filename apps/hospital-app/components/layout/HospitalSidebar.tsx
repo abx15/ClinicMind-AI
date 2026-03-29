@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useRole } from '@/hooks/useRole'
 import { useAuthStore } from '@/stores/authStore'
-import { cn } from '@clinicmind/ui'
 
 // Nav items for hospital admin
 const navItems = [
@@ -76,9 +75,9 @@ const navItems = [
 ]
 
 export default function HospitalSidebar() {
-  const pathname  = usePathname()
+  const pathname   = usePathname()
   const { logout } = useAuthStore()
-  const { user }  = useRole()
+  const user       = useAuthStore(s => s.user)
 
   return (
     <aside className="w-[220px] flex-shrink-0 h-screen bg-[#0B2920] flex flex-col">
@@ -108,15 +107,13 @@ export default function HospitalSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={cn(
-                'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium',
-                'transition-all duration-150',
-                isActive
-                  ? 'bg-[#0F6E56] text-white'
-                  : 'text-white/45 hover:bg-white/[0.06] hover:text-white/75'
-              )}
+              className={[
+              'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium',
+              'transition-all duration-150',
+              isActive ? 'bg-[#0F6E56] text-white' : 'text-white/45 hover:bg-white/[0.06] hover:text-white/75',
+            ].join(' ')}
             >
-              <span className={cn('w-4 h-4', isActive ? 'opacity-100' : 'opacity-70')}>
+              <span className={['w-4 h-4', isActive ? 'opacity-100' : 'opacity-70'].join(' ')}>
                 {item.icon}
               </span>
               {item.label}
