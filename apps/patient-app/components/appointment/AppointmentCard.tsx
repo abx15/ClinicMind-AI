@@ -1,143 +1,119 @@
 'use client'
 
-import { useState } from 'react'
-import { CalendarIcon, ClockIcon, UsersIcon, FileTextIcon, XIcon } from '@/components/icons'
-import { Appointment, AppointmentStatus } from '@clinicmind/types'
+import { CalendarIcon, ClockIcon, UserIcon, FileTextIcon } from '@/components/icons'
+
+interface Appointment {
+  _id: string
+  status: 'booked' | 'confirmed' | 'completed' | 'cancelled' | 'ongoing'
+  date: string
+  timeSlot: string
+  notes?: string
+  doctor?: { name: string; specialization: string }
+  hospital?: { name: string; city: string }
+}
 
 interface AppointmentCardProps {
-  appointment: Appointment & {
-    doctor?: {
-      name: string
-      specialization: string
-    }
-    hospital?: {
-      name: string
-      city: string
-    }
-  }
-  onCancel?: (appointmentId: string) => void
+  appointment: Appointment
+  onCancel?: (id: string) => void
+}
+
+const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+  booked:    { bg: 'bg-accent-light',  text: 'text-accent',   label: 'Booked' },
+  confirmed: { bg: 'bg-primary-light', text: 'text-primary',  label: 'Confirmed' },
+  completed: { bg: 'bg-surface',       text: 'text-text-2',   label: 'Completed' },
+  cancelled: { bg: 'bg-danger-light',  text: 'text-danger',   label: 'Cancelled' },
+  ongoing:   { bg: 'bg-warn-light',    text: 'text-warn',     label: 'In Progress' },
+}
+
+function formatDate(date: string | Date) {
+  return new Date(date).toLocaleDateString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric',
+  })
+}
+
+function formatTime(time: string) {
+  const [h, m] = time.split(':')
+  const hour = parseInt(h)
+  const ampm = hour >= 12 ? 'PM' : 'AM'
+  const display = hour % 12 || 12
+  return `${display}:${m} ${ampm}`
 }
 
 export default function AppointmentCard({ appointment, onCancel }: AppointmentCardProps) {
-  const getStatusColor = (status: AppointmentStatus) => {
-    switch (status) {
-      case 'booked':
-        return 'bg-blue-100 text-blue-700'
-      case 'confirmed':
-        return 'bg-green-100 text-green-700'
-      case 'completed':
-        return 'bg-gray-100 text-gray-700'
-      case 'cancelled':
-        return 'bg-red-100 text-red-700'
-      case 'ongoing':
-        return 'bg-amber-100 text-amber-700'
-      default:
-        return 'bg-gray-100 text-gray-700'
-    }
-  }
-
-  const getStatusText = (status: AppointmentStatus) => {
-    switch (status) {
-      case 'booked':
-        return 'Booked'
-      case 'confirmed':
-        return 'Confirmed'
-      case 'completed':
-        return 'Completed'
-      case 'cancelled':
-        return 'Cancelled'
-      case 'ongoing':
-        return 'In Progress'
-      default:
-        return status
-    }
-  }
-
-  const formatDate = (date: string | Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  }
-
-  const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(':')
-    const hour = parseInt(hours)
-    const ampm = hour >= 12 ? 'PM' : 'AM'
-    const displayHour = hour % 12 || 12
-    return `${displayHour}:${minutes} ${ampm}`
-  }
-
-  const canCancel = appointment.status === 'booked' || appointment.status === 'confirmed'
-  const canViewPrescription = appointment.status === 'completed'
-  const canGetToken = appointment.status === 'confirmed'
+  const s = STATUS_STYLES[appointment.status] ?? STATUS_STYLES.completed
+  const canCancel      = appointment.status === 'booked' || appointment.status === 'confirmed'
+  const canViewRx      = appointment.status === 'completed'
+  const canGetToken    = appointment.status === 'confirmed'
 
   return (
-    <div className="card p-6">
-      <div className="flex items-start space-x-4">
+    <div className="bg-white rounded-2xl border border-border p-5 hover:shadow-md transition-shadow">
+      <div className="flex gap-4">
         {/* Avatar */}
-        <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-          <UsersIcon className="w-6 h-6 text-primary-600" />
+        <div className="w-12 h-12 rounded-full bg-primary-light flex items-center
+                        justify-center flex-shrink-0">
+          <UserIcon size={20} className="text-primary" />
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-2">
+          <div className="flex items-start justify-between gap-2 flex-wrap">
             <div>
-              <h3 className="font-semibold text-text-primary">
-                {appointment.doctor?.name || 'Dr. Unknown'}
+              <h3 className="font-semibold text-text-1 text-sm">
+                {appointment.doctor?.name ?? 'Dr. TBD'}
               </h3>
-              <p className="text-sm text-text-muted">
-                {appointment.doctor?.specialization || 'General Medicine'}
+              <p className="text-xs text-text-3">
+                {appointment.doctor?.specialization ?? 'General Medicine'}
               </p>
             </div>
-            <div className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(appointment.status)}`}>
-              {getStatusText(appointment.status)}
-            </div>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${s.bg} ${s.text}`}>
+              {s.label}
+            </span>
           </div>
 
-          <div className="text-sm text-text-muted mb-3">
-            <p>{appointment.hospital?.name || 'Unknown Hospital'}</p>
-            <p>{appointment.hospital?.city || 'Unknown City'}</p>
-          </div>
+          <p className="text-xs text-text-2 mt-1">
+            {appointment.hospital?.name ?? 'Unknown Hospital'}
+            {appointment.hospital?.city ? ` · ${appointment.hospital.city}` : ''}
+          </p>
 
-          <div className="flex items-center space-x-4 text-sm text-text-muted mb-4">
-            <div className="flex items-center">
-              <CalendarIcon className="w-4 h-4 mr-1" />
-              <span>{formatDate(appointment.date)}</span>
-            </div>
-            <div className="flex items-center">
-              <ClockIcon className="w-4 h-4 mr-1" />
-              <span>{formatTime(appointment.timeSlot)}</span>
-            </div>
+          <div className="flex items-center gap-4 mt-2 text-xs text-text-3">
+            <span className="flex items-center gap-1">
+              <CalendarIcon size={12} />
+              {formatDate(appointment.date)}
+            </span>
+            <span className="flex items-center gap-1">
+              <ClockIcon size={12} />
+              {formatTime(appointment.timeSlot)}
+            </span>
           </div>
 
           {appointment.notes && (
-            <div className="text-sm text-text-muted mb-4 p-2 bg-gray-50 rounded">
-              <p className="line-clamp-2">{appointment.notes}</p>
-            </div>
+            <p className="mt-2 text-xs text-text-3 bg-surface rounded-lg px-3 py-1.5
+                          border border-border line-clamp-2">
+              {appointment.notes}
+            </p>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-3">
+          {/* Actions */}
+          <div className="flex items-center gap-2 mt-3 flex-wrap">
             {canGetToken && (
-              <button className="btn-primary text-sm py-2 px-4">
+              <button className="px-3 py-1.5 bg-primary text-white text-xs font-semibold
+                                 rounded-lg hover:bg-primary-dark transition-colors">
                 Get Queue Token
               </button>
             )}
-            
-            {canViewPrescription && (
-              <button className="btn-outline text-sm py-2 px-4">
-                <FileTextIcon className="w-4 h-4 mr-1" />
+            {canViewRx && (
+              <button className="flex items-center gap-1 px-3 py-1.5 border border-border
+                                 text-xs font-medium text-text-2 rounded-lg
+                                 hover:bg-surface transition-colors">
+                <FileTextIcon size={12} />
                 View Prescription
               </button>
             )}
-
             {canCancel && onCancel && (
               <button
                 onClick={() => onCancel(appointment._id)}
-                className="text-red-500 hover:text-red-600 font-medium text-sm py-2 px-4 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                className="px-3 py-1.5 border border-danger/30 text-xs font-medium
+                           text-danger rounded-lg hover:bg-danger-light transition-colors"
               >
                 Cancel
               </button>

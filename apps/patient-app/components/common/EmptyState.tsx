@@ -1,4 +1,4 @@
-import { SearchIcon } from '@/components/icons'
+import { CalendarIcon } from '@/components/icons'
 
 interface EmptyStateProps {
   title: string
@@ -8,33 +8,35 @@ interface EmptyStateProps {
   icon?: React.ReactNode
 }
 
-export default function EmptyState({ 
-  title, 
-  description, 
-  actionLabel, 
-  onAction, 
-  icon 
+export default function EmptyState({
+  title,
+  description,
+  actionLabel,
+  onAction,
+  icon,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4">
+    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
       {icon || (
-        <div className="w-24 h-24 bg-primary-50 rounded-full flex items-center justify-center mb-6">
-          <SearchIcon className="w-12 h-12 text-primary-500" />
+        <div className="w-16 h-16 rounded-full bg-primary-light flex items-center
+                        justify-center mb-5">
+          <CalendarIcon size={28} className="text-primary" />
         </div>
       )}
-      
-      <h3 className="text-xl font-semibold text-text-primary mb-2 font-heading">
+
+      <h3 className="font-heading font-bold text-lg text-text-1 mb-1">
         {title}
       </h3>
-      
-      <p className="text-text-muted text-center max-w-md mb-6">
+
+      <p className="text-sm text-text-3 max-w-md mb-6">
         {description}
       </p>
-      
+
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="btn-primary"
+          className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white
+                     font-semibold text-sm rounded-xl transition-colors"
         >
           {actionLabel}
         </button>

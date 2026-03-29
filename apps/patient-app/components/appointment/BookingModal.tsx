@@ -3,12 +3,30 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { XIcon, CalendarIcon, ClockIcon, UserIcon, FileTextIcon, SearchIcon, MapPinIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
+import {
+  XIcon, CalendarIcon, ClockIcon, UserIcon,
+  FileTextIcon, SearchIcon, ChevronRightIcon, CheckIcon, LoaderIcon,
+} from '@/components/icons'
 import { toast } from 'sonner'
-import { Doctor, Appointment } from '@clinicmind/types'
 import { useIsAuthenticated } from '@/stores/authStore'
 import { appointmentService } from '@/lib/services/appointmentService'
-import { Hospital } from '@clinicmind/types'
+
+interface Hospital {
+  _id: string
+  name: string
+  city: string
+  [key: string]: any
+}
+
+interface Doctor {
+  _id: string
+  name: string
+  specialization: string
+  qualifications?: string[]
+  experience?: number
+  consultationFee?: number
+  [key: string]: any
+}
 
 interface BookingModalProps {
   isOpen: boolean
@@ -20,305 +38,269 @@ interface BookingModalProps {
 
 interface BookingData {
   hospitalId: string
-  doctorId: string
-  date: string
-  timeSlot: string
-  notes: string
+  doctorId:   string
+  date:       string
+  timeSlot:   string
+  notes:      string
 }
 
-interface DoctorWithFee extends Doctor {
-  consultationFee?: number
-}
+const STEP_LABELS = ['Hospital & Doctor', 'Date & Time', 'Confirm']
 
-export default function BookingModal({ isOpen, onClose, hospitals = [], doctor, hospitalId }: BookingModalProps) {
-  const router = useRouter()
-  const isAuthenticated = useIsAuthenticated()
-  const [currentStep, setCurrentStep] = useState(1)
-  const [bookingData, setBookingData] = useState<BookingData>({
-    hospitalId: '',
-    doctorId: '',
-    date: '',
-    timeSlot: '',
-    notes: ''
-  })
-  const [selectedHospital, setSelectedHospital] = useState<Hospital | null>(null)
-  const [selectedDoctor, setSelectedDoctor] = useState<DoctorWithFee | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+const MOCK_DOCTORS: Record<string, Doctor[]> = {}
 
-  // Generate next 7 days
-  const getNext7Days = () => {
-    const days = []
-    const today = new Date()
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(today)
-      date.setDate(today.getDate() + i)
-      days.push(date)
-    }
-    return days
-  }
-
-  // Generate time slots
-  const getTimeSlots = () => {
-    const slots = []
-    for (let hour = 9; hour <= 18; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
-        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-        slots.push(time)
-      }
-    }
-    return slots
-  }
-
-  // Fetch available slots when doctor and date selected
-  const { data: slotsData } = useQuery({
-    queryKey: ['available-slots', selectedDoctor?._id, bookingData.date],
-    queryFn: () => {
-      if (selectedDoctor && bookingData.date) {
-        return appointmentService.getAvailableSlots(selectedDoctor._id, bookingData.date)
-      }
-      return { slots: [] }
-    },
-    enabled: !!(selectedDoctor && bookingData.date),
-  })
-
-  // Mock doctors for hospital
-  const getMockDoctors = (hospitalId: string): DoctorWithFee[] => {
-    return [
+function getMockDoctors(hospitalId: string): Doctor[] {
+  if (!MOCK_DOCTORS[hospitalId]) {
+    MOCK_DOCTORS[hospitalId] = [
       {
         _id: `doc_${hospitalId}_1`,
-        userId: 'user_1',
-        hospitalId,
         name: 'Dr. Priya Sharma',
         specialization: 'Cardiology',
         qualifications: ['MBBS', 'MD', 'DM'],
         experience: 8,
         consultationFee: 800,
-        isVerified: true,
-        isPublic: true,
-        createdAt: new Date(),
       },
       {
         _id: `doc_${hospitalId}_2`,
-        userId: 'user_2',
-        hospitalId,
         name: 'Dr. Rahul Verma',
         specialization: 'General Medicine',
         qualifications: ['MBBS', 'MD'],
         experience: 12,
         consultationFee: 500,
-        isVerified: true,
-        isPublic: true,
-        createdAt: new Date(),
+      },
+      {
+        _id: `doc_${hospitalId}_3`,
+        name: 'Dr. Anjali Patel',
+        specialization: 'Orthopedics',
+        qualifications: ['MBBS', 'MS'],
+        experience: 6,
+        consultationFee: 600,
       },
     ]
   }
+  return MOCK_DOCTORS[hospitalId]
+}
 
-  const hospitalMutation = useMutation({
+function getNext7Days() {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() + i)
+    return d
+  })
+}
+
+function getTimeSlots() {
+  const slots: string[] = []
+  for (let h = 9; h <= 18; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
+    }
+  }
+  return slots
+}
+
+export default function BookingModal({
+  isOpen, onClose, hospitals = [],
+}: BookingModalProps) {
+  const router          = useRouter()
+  const isAuthenticated = useIsAuthenticated()
+  const [step,          setStep]          = useState(1)
+  const [search,        setSearch]        = useState('')
+  const [selectedHosp,  setSelectedHosp]  = useState<Hospital | null>(null)
+  const [selectedDoc,   setSelectedDoc]   = useState<Doctor | null>(null)
+  const [booking,       setBooking]       = useState<BookingData>({
+    hospitalId: '', doctorId: '', date: '', timeSlot: '', notes: '',
+  })
+
+  const { data: slotsData } = useQuery({
+    queryKey: ['slots', selectedDoc?._id, booking.date],
+    queryFn:  () => {
+      if (selectedDoc && booking.date)
+        return appointmentService.getAvailableSlots(selectedDoc._id, booking.date)
+      return { slots: [] }
+    },
+    enabled: !!(selectedDoc && booking.date),
+  })
+
+  const bookMutation = useMutation({
     mutationFn: (data: BookingData) => appointmentService.bookAppointment(data),
     onSuccess: () => {
       toast.success('Appointment booked successfully!')
-      onClose()
+      handleClose()
       router.push('/dashboard/appointments')
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to book appointment')
-    },
+    onError: (e: any) =>
+      toast.error(e?.response?.data?.message || 'Failed to book appointment'),
   })
 
-  const handleDateSelect = (date: string) => {
-    setBookingData(prev => ({ ...prev, date }))
-    setCurrentStep(2)
-    // Reset time slot when date changes
-    setBookingData(prev => ({ ...prev, timeSlot: '' }))
+  const handleClose = () => {
+    setStep(1); setSearch(''); setSelectedHosp(null); setSelectedDoc(null)
+    setBooking({ hospitalId: '', doctorId: '', date: '', timeSlot: '', notes: '' })
+    onClose()
   }
 
-  const handleTimeSelect = (timeSlot: string) => {
-    setBookingData(prev => ({ ...prev, timeSlot }))
-    setCurrentStep(3)
+  const selectHospital = (h: Hospital) => {
+    setSelectedHosp(h); setSelectedDoc(null)
+    setBooking(b => ({ ...b, hospitalId: h._id, doctorId: '', date: '', timeSlot: '' }))
   }
 
-  const handleHospitalSelect = (hospital: Hospital) => {
-    setSelectedHospital(hospital)
-    setSelectedDoctor(null)
-    setBookingData(prev => ({ ...prev, hospitalId: hospital._id, doctorId: '', date: '', timeSlot: '' }))
-    setCurrentStep(1)
+  const selectDoctor = (d: Doctor) => {
+    setSelectedDoc(d)
+    setBooking(b => ({ ...b, doctorId: d._id, date: '', timeSlot: '' }))
+    setStep(2)
   }
 
-  const handleDoctorSelect = (doctor: DoctorWithFee) => {
-    setSelectedDoctor(doctor)
-    setBookingData(prev => ({ ...prev, doctorId: doctor._id, date: '', timeSlot: '' }))
-    setCurrentStep(1)
+  const selectDate = (date: string) => {
+    setBooking(b => ({ ...b, date, timeSlot: '' }))
   }
 
-  const handleConfirmBooking = () => {
-    if (!bookingData.hospitalId || !bookingData.doctorId || !bookingData.date || !bookingData.timeSlot) {
-      toast.error('Please select hospital, doctor, date and time')
+  const selectTime = (t: string) => {
+    setBooking(b => ({ ...b, timeSlot: t }))
+    setStep(3)
+  }
+
+  const confirm = () => {
+    if (!booking.hospitalId || !booking.doctorId || !booking.date || !booking.timeSlot) {
+      toast.error('Please complete all selections')
       return
     }
-    hospitalMutation.mutate(bookingData)
+    bookMutation.mutate(booking)
   }
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
-    })
-  }
-
-  const formatDateString = (date: Date) => {
-    return date.toISOString().split('T')[0]
-  }
-
-  const filteredHospitals = hospitals.filter(hospital =>
-    hospital.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    hospital.city.toLowerCase().includes(searchQuery.toLowerCase())
+  const bookedSlots: string[] = (slotsData as any)?.slots ?? []
+  const filtered = hospitals.filter(h =>
+    h.name.toLowerCase().includes(search.toLowerCase()) ||
+    h.city.toLowerCase().includes(search.toLowerCase())
   )
-
-  const doctors = selectedHospital ? getMockDoctors(selectedHospital._id) : []
+  const doctors = selectedHosp ? getMockDoctors(selectedHosp._id) : []
 
   if (!isOpen) return null
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    router.push('/login')
-    return null
-  }
+  if (!isAuthenticated) { router.push('/login'); return null }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-card max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center
+                    justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-2xl
+                      max-h-[92vh] overflow-y-auto shadow-2xl">
+
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-border p-6 rounded-t-card">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-text-primary font-heading">
-              Book Appointment
-            </h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-            >
-              <XIcon className="w-5 h-5 text-text-muted" />
-            </button>
+        <div className="sticky top-0 bg-white border-b border-border px-6 py-4
+                        flex items-center justify-between rounded-t-3xl sm:rounded-t-2xl">
+          <div>
+            <h2 className="font-heading font-bold text-lg text-text-1">Book Appointment</h2>
+            <p className="text-xs text-text-3">Step {step} of 3 — {STEP_LABELS[step - 1]}</p>
           </div>
+          <button
+            id="booking-close"
+            onClick={handleClose}
+            className="p-2 rounded-xl hover:bg-surface text-text-3 transition-colors"
+          >
+            <XIcon size={18} />
+          </button>
         </div>
 
-        {/* Content */}
+        {/* Progress Bar */}
+        <div className="h-1 bg-surface">
+          <div
+            className="h-full bg-primary transition-all duration-300"
+            style={{ width: `${(step / 3) * 100}%` }}
+          />
+        </div>
+
         <div className="p-6">
-          {/* Progress Steps */}
-          <div className="flex items-center justify-between mb-8">
-            {[1, 2, 3].map((step) => (
-              <div key={step} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  currentStep >= step 
-                    ? 'bg-primary-500 text-white' 
-                    : 'bg-gray-200 text-gray-600'
-                }`}>
-                  {step}
-                </div>
-                {step < 3 && (
-                  <div className={`w-12 h-1 mx-2 ${
-                    currentStep > step ? 'bg-primary-500' : 'bg-gray-200'
-                  }`} />
-                )}
-              </div>
-            ))}
-          </div>
 
-          {/* Step 1: Select Hospital & Doctor */}
-          {currentStep === 1 && (
-            <div>
-              <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center">
-                <SearchIcon className="w-5 h-5 mr-2" />
-                Select Hospital & Doctor
+          {/* ── STEP 1: Hospital & Doctor ── */}
+          {step === 1 && (
+            <div className="space-y-5">
+              <h3 className="font-semibold text-text-1 flex items-center gap-2">
+                <SearchIcon size={16} className="text-primary" />
+                Select Hospital &amp; Doctor
               </h3>
-              
-              {/* Hospital Search */}
-              <div className="mb-6">
-                <div className="relative">
-                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
-                  <input
-                    type="text"
-                    placeholder="Search hospitals..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="input-field pl-11"
-                  />
-                </div>
+
+              {/* Search */}
+              <div className="relative">
+                <SearchIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-3" />
+                <input
+                  id="hospital-search"
+                  type="text"
+                  placeholder="Search hospital or city..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2.5 border border-border rounded-xl text-sm
+                             text-text-1 placeholder:text-text-3 outline-none
+                             focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
+                />
               </div>
 
-              {/* Hospital List */}
-              <div className="mb-6 max-h-48 overflow-y-auto">
-                {filteredHospitals.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-text-muted">No hospitals found</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {filteredHospitals.map((hospital) => (
-                      <button
-                        key={hospital._id}
-                        onClick={() => handleHospitalSelect(hospital)}
-                        className={`w-full text-left p-4 border rounded-lg transition-colors ${
-                          selectedHospital?._id === hospital._id
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-border hover:border-primary-500 hover:bg-primary-50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                              <span className="text-primary-500 font-bold">
-                                {hospital.name.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                            <div className="text-left">
-                              <p className="font-medium text-text-primary">{hospital.name}</p>
-                              <p className="text-sm text-text-muted">{hospital.city}</p>
-                            </div>
-                          </div>
-                          <ChevronRightIcon className="w-5 h-5 text-text-muted" />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
+              {/* Hospitals */}
+              <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+                {filtered.length === 0 ? (
+                  <div className="py-8 text-center text-sm text-text-3">No hospitals found</div>
+                ) : filtered.map(h => (
+                  <button
+                    key={h._id}
+                    id={`hospital-${h._id}`}
+                    onClick={() => selectHospital(h)}
+                    className={`w-full text-left p-3.5 border rounded-xl flex items-center
+                                justify-between transition-all ${
+                      selectedHosp?._id === h._id
+                        ? 'border-primary bg-primary-light'
+                        : 'border-border hover:border-primary hover:bg-primary-light/40'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-primary-light flex items-center
+                                      justify-center text-primary font-bold text-sm flex-shrink-0">
+                        {h.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm text-text-1">{h.name}</p>
+                        <p className="text-xs text-text-3">{h.city}</p>
+                      </div>
+                    </div>
+                    {selectedHosp?._id === h._id
+                      ? <CheckIcon size={14} className="text-primary" />
+                      : <ChevronRightIcon size={14} className="text-text-3" />
+                    }
+                  </button>
+                ))}
               </div>
 
-              {/* Doctor Selection */}
-              {selectedHospital && (
+              {/* Doctors */}
+              {selectedHosp && (
                 <div>
-                  <h4 className="font-medium text-text-primary mb-4">
-                    Select Doctor from {selectedHospital.name}
+                  <h4 className="text-sm font-semibold text-text-1 mb-2">
+                    Doctors at {selectedHosp.name}
                   </h4>
-                  <div className="space-y-3 max-h-48 overflow-y-auto">
-                    {doctors.map((doctor) => (
+                  <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+                    {doctors.map(d => (
                       <button
-                        key={doctor._id}
-                        onClick={() => handleDoctorSelect(doctor)}
-                        className={`w-full text-left p-4 border rounded-lg transition-colors ${
-                          selectedDoctor?._id === doctor._id
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-border hover:border-primary-500 hover:bg-primary-50'
+                        key={d._id}
+                        id={`doctor-${d._id}`}
+                        onClick={() => selectDoctor(d)}
+                        className={`w-full text-left p-3.5 border rounded-xl flex items-center
+                                    justify-between transition-all ${
+                          selectedDoc?._id === d._id
+                            ? 'border-primary bg-primary-light'
+                            : 'border-border hover:border-primary hover:bg-primary-light/40'
                         }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                              <span className="text-purple-600 font-bold">
-                                {doctor.name.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                            <div className="text-left">
-                              <p className="font-medium text-text-primary">{doctor.name}</p>
-                              <p className="text-sm text-text-muted">{doctor.specialization}</p>
-                              <p className="text-sm font-medium text-primary-500">
-                                ₹{doctor.consultationFee} per consultation
-                              </p>
-                            </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-purple-light flex items-center
+                                          justify-center text-purple font-bold text-sm flex-shrink-0">
+                            {d.name.charAt(0)}
                           </div>
-                          <ChevronRightIcon className="w-5 h-5 text-text-muted" />
+                          <div>
+                            <p className="font-medium text-sm text-text-1">{d.name}</p>
+                            <p className="text-xs text-text-3">{d.specialization}</p>
+                            <p className="text-xs font-semibold text-primary mt-0.5">
+                              ₹{d.consultationFee} / visit
+                            </p>
+                          </div>
                         </div>
+                        {selectedDoc?._id === d._id
+                          ? <CheckIcon size={14} className="text-primary" />
+                          : <ChevronRightIcon size={14} className="text-text-3" />
+                        }
                       </button>
                     ))}
                   </div>
@@ -327,151 +309,159 @@ export default function BookingModal({ isOpen, onClose, hospitals = [], doctor, 
             </div>
           )}
 
-          {/* Step 2: Select Date & Time */}
-          {currentStep === 2 && (
-            <div>
-              <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center">
-                <CalendarIcon className="w-5 h-5 mr-2" />
-                Select Date & Time
+          {/* ── STEP 2: Date & Time ── */}
+          {step === 2 && (
+            <div className="space-y-5">
+              <h3 className="font-semibold text-text-1 flex items-center gap-2">
+                <CalendarIcon size={16} className="text-primary" />
+                Select Date &amp; Time
               </h3>
-              
-              {/* Date Selection */}
-              <div className="mb-6">
-                <h4 className="font-medium text-text-primary mb-3">Select Date</h4>
-                <div className="grid grid-cols-7 gap-2">
-                  {getNext7Days().map((date, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleDateSelect(formatDateString(date))}
-                      className={`p-3 rounded-lg border text-center transition-colors ${
-                        bookingData.date === formatDateString(date)
-                          ? 'border-primary-500 bg-primary-50 text-primary-600'
-                          : 'border-border hover:border-primary-500 hover:bg-primary-50'
-                      }`}
-                    >
-                      <div className="text-xs text-text-muted">
-                        {date.toLocaleDateString('en-US', { weekday: 'short' })}
-                      </div>
-                      <div className="font-semibold">
-                        {date.getDate()}
-                      </div>
-                      <div className="text-xs text-text-muted">
-                        {date.toLocaleDateString('en-US', { month: 'short' })}
-                      </div>
-                    </button>
-                  ))}
+
+              {/* Selected doctor info */}
+              {selectedDoc && (
+                <div className="bg-primary-light rounded-xl px-4 py-3 border border-primary/20">
+                  <p className="text-sm font-semibold text-text-1">{selectedDoc.name}</p>
+                  <p className="text-xs text-text-3">{selectedDoc.specialization} · ₹{selectedDoc.consultationFee}</p>
+                </div>
+              )}
+
+              {/* Dates */}
+              <div>
+                <p className="text-sm font-medium text-text-1 mb-2">Select Date</p>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {getNext7Days().map((d, i) => {
+                    const ds = d.toISOString().split('T')[0]
+                    const selected = booking.date === ds
+                    return (
+                      <button
+                        key={i}
+                        id={`date-${ds}`}
+                        onClick={() => selectDate(ds)}
+                        className={`p-2 rounded-xl border text-center transition-all ${
+                          selected
+                            ? 'border-primary bg-primary text-white'
+                            : 'border-border hover:border-primary hover:bg-primary-light/40'
+                        }`}
+                      >
+                        <div className={`text-[10px] ${selected ? 'text-white/70' : 'text-text-3'}`}>
+                          {d.toLocaleDateString('en-US', { weekday: 'short' })}
+                        </div>
+                        <div className={`font-bold text-sm ${selected ? 'text-white' : 'text-text-1'}`}>
+                          {d.getDate()}
+                        </div>
+                        <div className={`text-[10px] ${selected ? 'text-white/70' : 'text-text-3'}`}>
+                          {d.toLocaleDateString('en-US', { month: 'short' })}
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
-              {/* Time Slot Selection */}
-              {bookingData.date && (
+              {/* Time Slots */}
+              {booking.date && (
                 <div>
-                  <h4 className="font-medium text-text-primary mb-3">Select Time Slot</h4>
-                  <div className="grid grid-cols-4 gap-2">
-                    {getTimeSlots().map((time) => {
-                      const isBooked = slotsData?.slots?.includes(time)
+                  <p className="text-sm font-medium text-text-1 mb-2">Select Time</p>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+                    {getTimeSlots().map(t => {
+                      const booked   = bookedSlots.includes(t)
+                      const selected = booking.timeSlot === t
                       return (
                         <button
-                          key={time}
-                          onClick={() => !isBooked && handleTimeSelect(time)}
-                          disabled={isBooked}
-                          className={`p-3 rounded-lg border text-sm transition-colors ${
-                            isBooked
-                              ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50'
-                              : 'border-border hover:border-primary-500 hover:bg-primary-50'
+                          key={t}
+                          id={`time-${t}`}
+                          onClick={() => !booked && selectTime(t)}
+                          disabled={booked}
+                          className={`py-2 rounded-xl border text-xs font-medium transition-all ${
+                            booked
+                              ? 'border-border text-text-3 bg-surface cursor-not-allowed'
+                              : selected
+                              ? 'border-primary bg-primary text-white'
+                              : 'border-border hover:border-primary hover:bg-primary-light/40 text-text-2'
                           }`}
                         >
-                          {time}
+                          {t}
                         </button>
                       )
                     })}
                   </div>
-                  {slotsData?.slots?.length > 0 && (
-                    <p className="text-sm text-text-muted mt-2">
-                      {slotsData.slots.length} slots already booked
+                  {bookedSlots.length > 0 && (
+                    <p className="text-xs text-text-3 mt-1.5">
+                      {bookedSlots.length} slots already booked
                     </p>
                   )}
                 </div>
               )}
 
               <button
-                onClick={() => setCurrentStep(1)}
-                className="btn-outline"
+                onClick={() => setStep(1)}
+                className="text-sm text-text-2 hover:text-text-1 font-medium flex items-center gap-1"
               >
-                Back
+                ← Back
               </button>
             </div>
           )}
 
-          {/* Step 3: Confirm */}
-          {currentStep === 3 && (
-            <div>
-              <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center">
-                <FileTextIcon className="w-5 h-5 mr-2" />
-                Confirm Details
+          {/* ── STEP 3: Confirm ── */}
+          {step === 3 && (
+            <div className="space-y-5">
+              <h3 className="font-semibold text-text-1 flex items-center gap-2">
+                <FileTextIcon size={16} className="text-primary" />
+                Confirm Booking
               </h3>
-              
+
               {/* Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Hospital:</span>
-                    <span className="font-medium">
-                      {hospitals.find(h => h._id === bookingData.hospitalId)?.name}
-                    </span>
+              <div className="bg-surface rounded-2xl border border-border p-4 space-y-3">
+                {[
+                  { label: 'Hospital', value: selectedHosp?.name },
+                  { label: 'Doctor',   value: selectedDoc?.name },
+                  { label: 'Date',     value: booking.date },
+                  { label: 'Time',     value: booking.timeSlot },
+                  { label: 'Fee',      value: selectedDoc?.consultationFee ? `₹${selectedDoc.consultationFee}` : undefined },
+                ].map(({ label, value }) => value ? (
+                  <div key={label} className="flex justify-between items-center text-sm">
+                    <span className="text-text-3">{label}</span>
+                    <span className="font-semibold text-text-1">{value}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Doctor:</span>
-                    <span className="font-medium">
-                      {doctors.find(d => d._id === bookingData.doctorId)?.name}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Date:</span>
-                    <span className="font-medium">{bookingData.date}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Time:</span>
-                    <span className="font-medium">{bookingData.timeSlot}</span>
-                  </div>
-                  {selectedDoctor?.consultationFee && (
-                    <div className="flex justify-between">
-                      <span className="text-text-muted">Consultation Fee:</span>
-                      <span className="font-medium">
-                        ₹{selectedDoctor.consultationFee}
-                      </span>
-                    </div>
-                  )}
-                </div>
+                ) : null)}
               </div>
 
               {/* Notes */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-text-secondary mb-2">
-                  Additional Notes (Optional)
+              <div>
+                <label className="text-sm font-medium text-text-1 block mb-1.5">
+                  Additional Notes <span className="text-text-3">(optional)</span>
                 </label>
                 <textarea
-                  value={bookingData.notes}
-                  onChange={(e) => setBookingData(prev => ({ ...prev, notes: e.target.value }))}
+                  id="booking-notes"
+                  value={booking.notes}
+                  onChange={e => setBooking(b => ({ ...b, notes: e.target.value }))}
                   placeholder="Describe your symptoms or reason for visit..."
-                  className="input-field resize-none"
-                  rows={4}
+                  rows={3}
+                  className="w-full border border-border rounded-xl px-3 py-2.5 text-sm
+                             text-text-1 placeholder:text-text-3 outline-none
+                             focus:border-primary focus:ring-2 focus:ring-primary/15
+                             transition-all resize-none"
                 />
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex gap-3">
                 <button
-                  onClick={() => setCurrentStep(2)}
-                  className="btn-outline"
+                  onClick={() => setStep(2)}
+                  className="px-5 py-2.5 border border-border rounded-xl text-sm font-medium
+                             text-text-2 hover:bg-surface transition-colors"
                 >
                   Back
                 </button>
                 <button
-                  onClick={handleConfirmBooking}
-                  disabled={hospitalMutation.isPending}
-                  className="btn-primary flex-1"
+                  id="confirm-booking-btn"
+                  onClick={confirm}
+                  disabled={bookMutation.isPending}
+                  className="flex-1 py-2.5 bg-primary hover:bg-primary-dark text-white
+                             font-semibold text-sm rounded-xl transition-colors
+                             disabled:opacity-60 flex items-center justify-center gap-2"
                 >
-                  {hospitalMutation.isPending ? 'Booking...' : 'Confirm Booking'}
+                  {bookMutation.isPending && <LoaderIcon size={14} />}
+                  {bookMutation.isPending ? 'Booking...' : 'Confirm Booking'}
                 </button>
               </div>
             </div>

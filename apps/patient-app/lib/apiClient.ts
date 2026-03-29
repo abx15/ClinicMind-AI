@@ -10,6 +10,17 @@ export const apiClient = axios.create({
   },
 })
 
+// Helper function to get cookies (SSR-safe)
+function getCookie(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift()
+  }
+  return undefined
+}
+
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
@@ -19,9 +30,7 @@ apiClient.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
 // Response interceptor for error handling
@@ -29,22 +38,15 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      document.cookie = 'clinicmind_token=; path=/; max-age=0'
-      window.location.href = '/login'
+      if (typeof document !== 'undefined') {
+        document.cookie = 'clinicmind_token=; path=/; max-age=0'
+      }
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }
 )
-
-// Helper function to get cookies
-function getCookie(name: string): string | undefined {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${name}=`)
-  if (parts.length === 2) {
-    return parts.pop()?.split(';').shift()
-  }
-  return undefined
-}
 
 export default apiClient

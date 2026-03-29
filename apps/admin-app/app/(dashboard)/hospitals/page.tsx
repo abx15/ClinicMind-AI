@@ -6,7 +6,6 @@ import { adminService } from '@/lib/services/adminService'
 import HospitalApprovalCard from '@/components/hospital/HospitalApprovalCard'
 import HospitalTable from '@/components/hospital/HospitalTable'
 import ApproveRejectModal from '@/components/hospital/ApproveRejectModal'
-import { cn } from '@clinicmind/ui'
 
 type StatusFilter = 'all' | 'pending' | 'verified' | 'rejected' | 'suspended'
 
@@ -49,8 +48,8 @@ export default function AdminHospitalsPage() {
     onError: () => console.error('Failed to reject hospital'),
   })
 
-  const hospitals = data?.data?.hospitals || []
-  const total     = data?.data?.total || 0
+  const hospitals = (data as any)?.data?.hospitals ?? data?.data?.hospitals ?? []
+  const total     = (data as any)?.data?.total     ?? 0
 
   const filterTabs: { label: string; value: StatusFilter; color?: string }[] = [
     { label: 'Pending',   value: 'pending',   color: '#B86E0A' },
@@ -98,12 +97,12 @@ export default function AdminHospitalsPage() {
           <button
             key={tab.value}
             onClick={() => setStatus(tab.value)}
-            className={cn(
+            className={[
               'px-4 py-1.5 rounded-lg text-sm font-medium transition-all',
               status === tab.value
                 ? 'bg-[#0F6E56] text-white'
-                : 'bg-white border border-[#E2E8E4] text-[#8A9E98] hover:text-[#4A5E58]'
-            )}
+                : 'bg-white border border-[#E2E8E4] text-[#8A9E98] hover:text-[#4A5E58]',
+            ].join(' ')}
           >
             {tab.label}
           </button>

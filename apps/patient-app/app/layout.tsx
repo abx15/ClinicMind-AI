@@ -20,6 +20,11 @@ const syne = Syne({
 export const metadata: Metadata = {
   title:       'ClinicMind AI — Find Verified Hospitals & Doctors',
   description: 'Book appointments, track queue live, view prescriptions. AI-powered clinic management for India.',
+  icons: {
+    icon:     '/favicon.png',
+    apple:    '/logo.png',
+    shortcut: '/logo.png',
+  },
 }
 
 export default function RootLayout({
@@ -29,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSans.variable} ${syne.variable}`}>
-      <body className="font-dm-sans antialiased bg-background text-text-primary" suppressHydrationWarning>
+      <body className="font-sans antialiased bg-surface text-text-1" suppressHydrationWarning>
         <Providers>
           {children}
         </Providers>

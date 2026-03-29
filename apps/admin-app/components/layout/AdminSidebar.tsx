@@ -1,101 +1,92 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useAuth } from '@/hooks/useAuth'
-import { cn } from '@clinicmind/ui'
+import Image from 'next/image'
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/authStore'
 
 const navItems = [
   {
     section: 'Platform',
     items: [
-      {
-        label: 'Overview',
-        href:  '/dashboard/overview',
-        icon: GridIcon,
-      },
-      {
-        label: 'Hospitals',
-        href:  '/dashboard/hospitals',
-        icon: BuildingIcon,
-      },
-      {
-        label: 'Doctors',
-        href:  '/dashboard/doctors',
-        icon: UserMdIcon,
-      },
-      {
-        label: 'Patients',
-        href:  '/dashboard/patients',
-        icon: UsersIcon,
-      },
+      { label: 'Overview',  href: '/dashboard/overview',  icon: GridIcon   },
+      { label: 'Hospitals', href: '/dashboard/hospitals', icon: BuildingIcon },
+      { label: 'Doctors',   href: '/dashboard/doctors',   icon: UserMdIcon  },
+      { label: 'Patients',  href: '/dashboard/patients',  icon: UsersIcon   },
     ],
   },
   {
     section: 'Business',
     items: [
-      {
-        label: 'Analytics',
-        href:  '/dashboard/analytics',
-        icon: ChartIcon,
-      },
-      {
-        label: 'Billing / MRR',
-        href:  '/dashboard/analytics#billing',
-        icon: CurrencyIcon,
-      },
-      {
-        label: 'Settings',
-        href:  '/dashboard/settings',
-        icon: SettingsIcon,
-      },
+      { label: 'Analytics',   href: '/dashboard/analytics',         icon: ChartIcon    },
+      { label: 'Billing/MRR', href: '/dashboard/analytics#billing', icon: CurrencyIcon },
+      { label: 'Settings',    href: '/dashboard/settings',          icon: SettingsIcon  },
     ],
   },
 ]
 
 export default function AdminSidebar() {
   const pathname = usePathname()
-  const { logout, user } = useAuth()
+  const router   = useRouter()
+  const user     = useAuthStore(s => s.user)
+  const clearAuth = useAuthStore(s => s.clearAuth)
+
+  const logout = () => {
+    clearAuth()
+    if (typeof document !== 'undefined') {
+      document.cookie = 'clinicmind_token=; path=/; max-age=0'
+    }
+    router.push('/login')
+  }
 
   return (
     <aside className="w-[220px] flex-shrink-0 h-screen bg-[#0B2920] flex flex-col
-                      border-r border-white/[0.06]">
+                      border-r border-white/[0.06] sticky top-0">
       {/* Brand */}
-      <div className="px-5 py-6 border-b border-white/[0.07]">
-        <div className="font-syne font-extrabold text-[17px] text-white tracking-tight">
-          ClinicMind
+      <div className="px-5 py-5 border-b border-white/[0.07]">
+        <div className="flex items-center gap-2 mb-2">
+          <Image
+            src="/logo.png"
+            alt="ClinicMind"
+            width={28}
+            height={28}
+            className="rounded-lg"
+          />
+          <span className="font-heading font-extrabold text-[17px] text-white tracking-tight">
+            ClinicMind
+          </span>
         </div>
-        <div className="text-[10px] text-white/30 mt-0.5 font-mono">
+        <div className="text-[10px] text-white/30 font-mono mb-1.5">
           admin.clinicmind.in
         </div>
-        <span className="inline-block mt-2 text-[9px] font-semibold uppercase tracking-widest
+        <span className="inline-block text-[9px] font-semibold uppercase tracking-widest
                          px-2 py-0.5 rounded-full bg-[#5c1a1a] text-[#E87878]">
           Super Admin
         </span>
       </div>
 
-      {/* Nav sections */}
-      <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto">
-        {navItems.map((section) => (
+      {/* Nav */}
+      <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+        {navItems.map(section => (
           <div key={section.section}>
             <div className="text-[9px] font-semibold text-white/25 uppercase tracking-widest
                             px-2 py-1 mb-1">
               {section.section}
             </div>
             <div className="space-y-0.5">
-              {section.items.map((item) => {
+              {section.items.map(item => {
                 const isActive = pathname.startsWith(item.href.split('#')[0])
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={cn(
+                    className={[
                       'flex items-center gap-2.5 px-2.5 py-2 rounded-lg',
                       'text-[13px] font-medium transition-all duration-150',
                       isActive
                         ? 'bg-[#0F6E56] text-white'
-                        : 'text-white/45 hover:bg-white/[0.06] hover:text-white/75'
-                    )}
+                        : 'text-white/45 hover:bg-white/[0.06] hover:text-white/75',
+                    ].join(' ')}
                   >
                     <item.icon className="w-4 h-4 opacity-80" />
                     {item.label}
@@ -107,23 +98,23 @@ export default function AdminSidebar() {
         ))}
       </nav>
 
-      {/* Footer */}
+      {/* Footer — user + logout */}
       <div className="p-3 border-t border-white/[0.07]">
-        {/* User info */}
         <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl
-                        bg-[#FCEBEB]/10 mb-2">
+                        bg-white/[0.05] mb-2">
           <div className="w-8 h-8 rounded-full bg-[#A32D2D] flex items-center
                           justify-center text-white text-xs font-bold flex-shrink-0">
-            {user?.name?.charAt(0) || 'A'}
+            {user?.name?.charAt(0) ?? 'A'}
           </div>
           <div className="min-w-0">
             <div className="text-xs font-semibold text-white truncate">
-              {user?.name || 'Super Admin'}
+              {user?.name ?? 'Super Admin'}
             </div>
             <div className="text-[10px] text-[#E87878]">Full platform access</div>
           </div>
         </div>
         <button
+          id="admin-logout-btn"
           onClick={logout}
           className="w-full px-3 py-2 text-xs text-white/40 hover:text-white/70
                      hover:bg-white/[0.05] rounded-lg transition-colors text-left"
@@ -135,7 +126,8 @@ export default function AdminSidebar() {
   )
 }
 
-// Inline SVG icon components
+// ── Inline SVG icons ──────────────────────────────────────────────────────────
+
 function GridIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="currentColor">
@@ -195,7 +187,7 @@ function SettingsIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="currentColor">
       <circle cx="8" cy="8" r="2"/>
-      <path d="M8 1v2M8 13v2M1 8h2M13 8h2"/>
+      <path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
     </svg>
   )
 }

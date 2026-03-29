@@ -1,19 +1,38 @@
 import { apiClient } from '@/lib/apiClient'
-import { API_URL } from '@clinicmind/config'
 
 export const authService = {
-  login: (credentials: { email: string; password: string }) =>
-    apiClient.post(`${API_URL}/auth/login`, credentials).then(r => r.data),
+  login: async (credentials: { email: string; password: string }) => {
+    const res = await apiClient.post('/auth/login', credentials)
+    // Backend returns: { success: true, data: { user, token } }
+    return res.data
+  },
 
-  register: (data: any) =>
-    apiClient.post(`${API_URL}/auth/register`, data).then(r => r.data),
+  register: async (data: {
+    name: string; email: string; phone: string
+    password: string; role: string
+  }) => {
+    const res = await apiClient.post('/auth/register', data)
+    return res.data
+  },
 
-  getMe: () =>
-    apiClient.get(`${API_URL}/auth/me`).then(r => r.data),
+  getMe: async () => {
+    const res = await apiClient.get('/auth/me')
+    return res.data
+  },
 
-  forgotPassword: (email: string) =>
-    apiClient.post(`${API_URL}/auth/forgot-password`, { email }).then(r => r.data),
+  forgotPassword: async (email: string) => {
+    const res = await apiClient.post('/auth/forgot-password', { email })
+    return res.data
+  },
 
-  resetPassword: (token: string, password: string) =>
-    apiClient.post(`${API_URL}/auth/reset-password`, { token, password }).then(r => r.data),
+  resetPassword: async (token: string, password: string) => {
+    const res = await apiClient.post('/auth/reset-password', { token, password })
+    return res.data
+  },
+
+  logout: async () => {
+    try {
+      await apiClient.post('/auth/logout')
+    } catch {}
+  },
 }
