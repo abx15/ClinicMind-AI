@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { X, Calendar, Clock, User, FileText, Search, MapPin, ChevronLeft, ChevronRight } from 'lucide-react'
+import { XIcon, CalendarIcon, ClockIcon, UserIcon, FileTextIcon, SearchIcon, MapPinIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
 import { toast } from 'sonner'
 import { Doctor, Appointment } from '@clinicmind/types'
 import { useIsAuthenticated } from '@/stores/authStore'
@@ -14,6 +14,8 @@ interface BookingModalProps {
   isOpen: boolean
   onClose: () => void
   hospitals?: Hospital[]
+  doctor?: Doctor
+  hospitalId?: string
 }
 
 interface BookingData {
@@ -28,7 +30,7 @@ interface DoctorWithFee extends Doctor {
   consultationFee?: number
 }
 
-export default function BookingModal({ isOpen, onClose, hospitals = [] }: BookingModalProps) {
+export default function BookingModal({ isOpen, onClose, hospitals = [], doctor, hospitalId }: BookingModalProps) {
   const router = useRouter()
   const isAuthenticated = useIsAuthenticated()
   const [currentStep, setCurrentStep] = useState(1)
@@ -196,7 +198,7 @@ export default function BookingModal({ isOpen, onClose, hospitals = [] }: Bookin
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-lg"
             >
-              <X className="w-5 h-5 text-text-muted" />
+              <XIcon className="w-5 h-5 text-text-muted" />
             </button>
           </div>
         </div>
@@ -227,14 +229,14 @@ export default function BookingModal({ isOpen, onClose, hospitals = [] }: Bookin
           {currentStep === 1 && (
             <div>
               <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center">
-                <Search className="w-5 h-5 mr-2" />
+                <SearchIcon className="w-5 h-5 mr-2" />
                 Select Hospital & Doctor
               </h3>
               
               {/* Hospital Search */}
               <div className="mb-6">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
+                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
                   <input
                     type="text"
                     placeholder="Search hospitals..."
@@ -275,7 +277,7 @@ export default function BookingModal({ isOpen, onClose, hospitals = [] }: Bookin
                               <p className="text-sm text-text-muted">{hospital.city}</p>
                             </div>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-text-muted" />
+                          <ChevronRightIcon className="w-5 h-5 text-text-muted" />
                         </div>
                       </button>
                     ))}
@@ -315,7 +317,7 @@ export default function BookingModal({ isOpen, onClose, hospitals = [] }: Bookin
                               </p>
                             </div>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-text-muted" />
+                          <ChevronRightIcon className="w-5 h-5 text-text-muted" />
                         </div>
                       </button>
                     ))}
@@ -329,7 +331,7 @@ export default function BookingModal({ isOpen, onClose, hospitals = [] }: Bookin
           {currentStep === 2 && (
             <div>
               <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center">
-                <Calendar className="w-5 h-5 mr-2" />
+                <CalendarIcon className="w-5 h-5 mr-2" />
                 Select Date & Time
               </h3>
               
@@ -405,7 +407,7 @@ export default function BookingModal({ isOpen, onClose, hospitals = [] }: Bookin
           {currentStep === 3 && (
             <div>
               <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center">
-                <FileText className="w-5 h-5 mr-2" />
+                <FileTextIcon className="w-5 h-5 mr-2" />
                 Confirm Details
               </h3>
               

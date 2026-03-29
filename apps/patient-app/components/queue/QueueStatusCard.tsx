@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Clock, Users, Wifi, WifiOff, Bell, Volume2 } from 'lucide-react'
+import { ClockIcon, UsersIcon, WifiIcon, WifiOffIcon, BellIcon, Volume2Icon } from '@/components/icons'
 import { QueueToken } from '@clinicmind/types'
 
 interface QueueStatusCardProps {
@@ -98,12 +98,12 @@ export default function QueueStatusCard({ token, liveEta, isConnected }: QueueSt
         <div className="flex items-center space-x-2">
           {isConnected ? (
             <>
-              <Wifi className="w-4 h-4 text-green-500" />
+              <WifiIcon className="w-4 h-4 text-green-500" />
               <span className="text-sm text-green-600 font-medium">Live</span>
             </>
           ) : (
             <>
-              <WifiOff className="w-4 h-4 text-gray-400" />
+              <WifiOffIcon className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-gray-500">Offline</span>
             </>
           )}
@@ -185,7 +185,7 @@ export default function QueueStatusCard({ token, liveEta, isConnected }: QueueSt
       {token.status === 'called' && (
         <div className="bg-green-100 border border-green-200 rounded-lg p-4 mb-6">
           <div className="flex items-center space-x-3">
-            <Bell className="w-5 h-5 text-green-600" />
+            <BellIcon className="w-5 h-5 text-green-600" />
             <div>
               <p className="font-semibold text-green-800">Please proceed to Doctor's room</p>
               <p className="text-sm text-green-700">Your consultation is about to begin</p>
@@ -197,11 +197,11 @@ export default function QueueStatusCard({ token, liveEta, isConnected }: QueueSt
       {/* Action Buttons */}
       <div className="flex space-x-3">
         <button className="flex-1 btn-outline flex items-center justify-center space-x-2">
-          <Volume2 className="w-4 h-4" />
+          <Volume2Icon className="w-4 h-4" />
           <span>Sound On</span>
         </button>
         <button className="flex-1 btn-outline flex items-center justify-center space-x-2">
-          <Bell className="w-4 h-4" />
+          <BellIcon className="w-4 h-4" />
           <span>Get WhatsApp Updates</span>
         </button>
       </div>

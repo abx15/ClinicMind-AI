@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { Search, Users, MapPin, Building, Calendar, Clock } from 'lucide-react'
+import { SearchIcon, UsersIcon, MapPinIcon, BuildingIcon, CalendarIcon, ClockIcon } from '@/components/icons'
 import { hospitalService } from '@/lib/services/hospitalService'
 import { Hospital } from '@clinicmind/types'
 import HospitalCard from '@/components/hospital/HospitalCard'
@@ -155,7 +155,7 @@ export default function SearchPage() {
               Search by Doctor Name / Specialization
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
                 placeholder="e.g. Dr. Priya Sharma, Cardiology, Pediatrics..."
@@ -171,7 +171,7 @@ export default function SearchPage() {
               Search by City
             </label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
+              <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
                 placeholder="e.g. Mumbai, Delhi, Bangalore..."
@@ -226,7 +226,7 @@ export default function SearchPage() {
                 description="Try adjusting your search criteria or check back later"
                 icon={
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Building className="w-8 h-8 text-gray-400" />
+                    <BuildingIcon className="w-8 h-8 text-gray-400" />
                   </div>
                 }
               />
@@ -250,7 +250,7 @@ export default function SearchPage() {
                 description="Try adjusting your search criteria or check back later"
                 icon={
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-gray-400" />
+                    <UsersIcon className="w-8 h-8 text-gray-400" />
                   </div>
                 }
               />

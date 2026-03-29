@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Clock, Users, FileText, X } from 'lucide-react'
+import { CalendarIcon, ClockIcon, UsersIcon, FileTextIcon, XIcon } from '@/components/icons'
 import { Appointment, AppointmentStatus } from '@clinicmind/types'
 
 interface AppointmentCardProps {
@@ -53,7 +53,7 @@ export default function AppointmentCard({ appointment, onCancel }: AppointmentCa
     }
   }
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -78,7 +78,7 @@ export default function AppointmentCard({ appointment, onCancel }: AppointmentCa
       <div className="flex items-start space-x-4">
         {/* Avatar */}
         <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-          <Users className="w-6 h-6 text-primary-600" />
+          <UsersIcon className="w-6 h-6 text-primary-600" />
         </div>
 
         {/* Content */}
@@ -104,11 +104,11 @@ export default function AppointmentCard({ appointment, onCancel }: AppointmentCa
 
           <div className="flex items-center space-x-4 text-sm text-text-muted mb-4">
             <div className="flex items-center">
-              <Calendar className="w-4 h-4 mr-1" />
+              <CalendarIcon className="w-4 h-4 mr-1" />
               <span>{formatDate(appointment.date)}</span>
             </div>
             <div className="flex items-center">
-              <Clock className="w-4 h-4 mr-1" />
+              <ClockIcon className="w-4 h-4 mr-1" />
               <span>{formatTime(appointment.timeSlot)}</span>
             </div>
           </div>
@@ -129,7 +129,7 @@ export default function AppointmentCard({ appointment, onCancel }: AppointmentCa
             
             {canViewPrescription && (
               <button className="btn-outline text-sm py-2 px-4">
-                <FileText className="w-4 h-4 mr-1" />
+                <FileTextIcon className="w-4 h-4 mr-1" />
                 View Prescription
               </button>
             )}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Doctor } from '@clinicmind/types'
-import { Star, Clock, DollarSign, CheckCircle } from 'lucide-react'
+import { StarIcon, ClockIcon, DollarSignIcon, CheckCircleIcon } from '@/components/icons'
 
 interface DoctorCardProps {
   doctor: Doctor & {
@@ -35,12 +35,12 @@ export default function DoctorCard({ doctor, onBookAppointment }: DoctorCardProp
                 {doctor.name}
               </h3>
               {doctor.isVerified && (
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <CheckCircleIcon className="w-5 h-5 text-green-500 flex-shrink-0" />
               )}
             </div>
             <p className="text-text-muted text-sm mb-2">{doctor.specialization}</p>
             <div className="flex items-center text-text-muted text-sm">
-              <Clock className="w-4 h-4 mr-1" />
+              <ClockIcon className="w-4 h-4 mr-1" />
               <span>{doctor.experience} years experience</span>
             </div>
           </div>
@@ -78,7 +78,7 @@ export default function DoctorCard({ doctor, onBookAppointment }: DoctorCardProp
         {/* Fee */}
         {doctor.consultationFee && (
           <div className="flex items-center text-text-primary font-medium mb-4">
-            <DollarSign className="w-4 h-4 mr-1" />
+            <DollarSignIcon className="w-4 h-4 mr-1" />
             <span>₹{doctor.consultationFee} per consultation</span>
           </div>
         )}

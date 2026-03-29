@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Calendar, Clock, Users, Plus, X, Check, AlertCircle } from 'lucide-react'
+import { CalendarIcon, ClockIcon, UsersIcon, PlusIcon, XIcon, CheckIcon, AlertCircleIcon } from '@/components/icons'
 import { toast } from 'sonner'
 import { appointmentService } from '@/lib/services/appointmentService'
 import { hospitalService } from '@/lib/services/hospitalService'
@@ -136,7 +136,7 @@ export default function AppointmentsPage() {
           onClick={() => setIsBookingModalOpen(true)}
           className="btn-primary flex items-center space-x-2"
         >
-          <Plus className="w-5 h-5" />
+          <PlusIcon className="w-5 h-5" />
           <span>Book Appointment</span>
         </button>
       </div>
@@ -211,12 +211,12 @@ export default function AppointmentsPage() {
                 onClick={() => setCancelModalOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-lg"
               >
-                <X className="w-5 h-5 text-text-muted" />
+                <XIcon className="w-5 h-5 text-text-muted" />
               </button>
             </div>
 
             <div className="flex items-center space-x-3 mb-4 p-3 bg-amber-50 rounded-lg">
-              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+              <AlertCircleIcon className="w-5 h-5 text-amber-600 flex-shrink-0" />
               <p className="text-sm text-amber-800">
                 Are you sure you want to cancel this appointment?
               </p>

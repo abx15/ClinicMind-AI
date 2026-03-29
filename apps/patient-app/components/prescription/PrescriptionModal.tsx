@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Download, Print, FileText, Users, Calendar, Clock, ChevronRight } from 'lucide-react'
+import { XIcon, DownloadIcon, PrinterIcon, FileTextIcon, UsersIcon, CalendarIcon, ClockIcon, ChevronRightIcon } from '@/components/icons'
 import { Prescription } from '@clinicmind/types'
 
 interface PrescriptionModalProps {
@@ -22,7 +22,7 @@ interface PrescriptionModalProps {
 export default function PrescriptionModal({ isOpen, onClose, prescription }: PrescriptionModalProps) {
   const [activeTab, setActiveTab] = useState<'details' | 'medications'>('details')
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -30,7 +30,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
     })
   }
 
-  const formatTime = (date: string) => {
+  const formatTime = (date: string | Date) => {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -102,7 +102,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-lg"
             >
-              <X className="w-5 h-5 text-text-muted" />
+              <XIcon className="w-5 h-5 text-text-muted" />
             </button>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                     <div className="space-y-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                          <Users className="w-6 h-6 text-purple-600" />
+                          <UsersIcon className="w-6 h-6 text-purple-600" />
                         </div>
                         <div>
                           <p className="font-medium text-text-primary">
@@ -177,7 +177,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                     <div className="space-y-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
-                          <FileText className="w-6 h-6 text-primary-600" />
+                          <FileTextIcon className="w-6 h-6 text-primary-600" />
                         </div>
                         <div>
                           <p className="font-medium text-text-primary">
@@ -210,7 +210,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                 <h3 className="font-semibold text-text-primary mb-4">Prescription Information</h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <Calendar className="w-4 h-4 text-text-muted" />
+                    <CalendarIcon className="w-4 h-4 text-text-muted" />
                     <div>
                       <span className="text-sm text-text-muted">Date:</span>
                       <span className="text-sm font-medium text-text-primary ml-2">
@@ -219,7 +219,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Clock className="w-4 h-4 text-text-muted" />
+                    <ClockIcon className="w-4 h-4 text-text-muted" />
                     <div>
                       <span className="text-sm text-text-muted">Time:</span>
                       <span className="text-sm font-medium text-text-primary ml-2">
@@ -228,7 +228,7 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <FileText className="w-4 h-4 text-text-muted" />
+                    <FileTextIcon className="w-4 h-4 text-text-muted" />
                     <div>
                       <span className="text-sm text-text-muted">Prescription ID:</span>
                       <span className="text-sm font-medium text-text-primary ml-2">
@@ -275,14 +275,14 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                   onClick={handleDownload}
                   className="btn-outline flex items-center space-x-2"
                 >
-                  <Download className="w-4 h-4" />
+                  <DownloadIcon className="w-4 h-4" />
                   <span>Download PDF</span>
                 </button>
                 <button
                   onClick={handlePrint}
                   className="btn-outline flex items-center space-x-2"
                 >
-                  <Print className="w-4 h-4" />
+                  <PrinterIcon className="w-4 h-4" />
                   <span>Print</span>
                 </button>
               </div>
@@ -368,13 +368,23 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                   <div>
                     <span className="text-text-muted">Total Quantity:</span>
                     <span className="font-medium text-text-primary">
-                      {medications.reduce((sum, med) => sum + (med.quantity || 0), 0)}
+                      {medications.reduce((sum, med) => {
+                        const qty = typeof med.quantity === 'string' 
+                          ? parseInt(med.quantity) || 0 
+                          : (med.quantity || 0)
+                        return sum + qty
+                      }, 0)}
                     </span>
                   </div>
                   <div>
                     <span className="text-text-muted">Total Refills:</span>
                     <span className="font-medium text-text-primary">
-                      {medications.reduce((sum, med) => sum + (med.refills || 0), 0)}
+                      {medications.reduce((sum, med) => {
+                        const refills = typeof med.refills === 'string' 
+                          ? parseInt(med.refills) || 0 
+                          : (med.refills || 0)
+                        return sum + refills
+                      }, 0)}
                     </span>
                   </div>
                 </div>
@@ -386,14 +396,14 @@ export default function PrescriptionModal({ isOpen, onClose, prescription }: Pre
                   onClick={handleDownload}
                   className="btn-outline flex items-center space-x-2"
                 >
-                  <Download className="w-4 h-4" />
+                  <DownloadIcon className="w-4 h-4" />
                   <span>Download PDF</span>
                 </button>
                 <button
                   onClick={handlePrint}
                   className="btn-outline flex items-center space-x-2"
                 >
-                  <Print className="w-4 h-4" />
+                  <PrinterIcon className="w-4 h-4" />
                   <span>Print</span>
                 </button>
               </div>

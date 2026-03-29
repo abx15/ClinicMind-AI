@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MapPin, Star, Users } from 'lucide-react'
+import { MapPinIcon, StarIcon, UsersIcon } from '@/components/icons'
 import { Hospital } from '@clinicmind/types'
 
 interface HospitalCardProps {
@@ -41,7 +41,7 @@ export default function HospitalCard({ hospital }: HospitalCardProps) {
                 {hospital.name}
               </h3>
               <div className="flex items-center text-text-muted text-sm mt-1">
-                <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                <MapPinIcon className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">{hospital.city}</span>
               </div>
             </div>
@@ -51,7 +51,7 @@ export default function HospitalCard({ hospital }: HospitalCardProps) {
           <div className="flex items-center space-x-1 mb-4">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
-                <Star
+                <StarIcon
                   key={i}
                   className={`w-4 h-4 ${
                     i < 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'
@@ -84,7 +84,7 @@ export default function HospitalCard({ hospital }: HospitalCardProps) {
           {/* Doctor count */}
           {hospital.doctorCount && (
             <div className="flex items-center text-text-muted text-sm mb-4">
-              <Users className="w-4 h-4 mr-2" />
+              <UsersIcon className="w-4 h-4 mr-2" />
               <span>{hospital.doctorCount} verified doctors available</span>
             </div>
           )}

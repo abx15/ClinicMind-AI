@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { Calendar, Clock, FileText, Search, ArrowRight, Activity, Users, Star } from 'lucide-react'
+import { CalendarIcon, ClockIcon, FileTextIcon, SearchIcon, ArrowRightIcon, ActivityIcon, UsersIcon, StarIcon } from '@/components/icons'
 import { useUser } from '@/stores/authStore'
 import { appointmentService } from '@/lib/services/appointmentService'
 import { queueService } from '@/lib/services/queueService'
@@ -99,7 +99,7 @@ export default function PatientHomePage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-text-primary mb-2 flex items-center">
-                <Clock className="w-5 h-5 mr-2 text-amber-500" />
+                <ClockIcon className="w-5 h-5 mr-2 text-amber-500" />
                 Active Queue Token
               </h3>
               <div className="flex items-center space-x-4 text-sm text-text-muted">
@@ -130,7 +130,7 @@ export default function PatientHomePage() {
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-600" />
+              <CalendarIcon className="w-6 h-6 text-blue-600" />
             </div>
             <span className="text-2xl font-bold text-text-primary">{upcomingAppointments}</span>
           </div>
@@ -141,7 +141,7 @@ export default function PatientHomePage() {
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-              <Clock className="w-6 h-6 text-amber-600" />
+              <ClockIcon className="w-6 h-6 text-amber-600" />
             </div>
             <span className="text-2xl font-bold text-text-primary">{activeToken ? '1' : '0'}</span>
           </div>
@@ -152,7 +152,7 @@ export default function PatientHomePage() {
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-6 h-6 text-green-600" />
+              <FileTextIcon className="w-6 h-6 text-green-600" />
             </div>
             <span className="text-2xl font-bold text-text-primary">{prescriptions.length}</span>
           </div>
@@ -176,7 +176,7 @@ export default function PatientHomePage() {
 
           {recentAppointments.length === 0 ? (
             <div className="text-center py-8">
-              <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <CalendarIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
               <p className="text-text-muted">No recent appointments</p>
             </div>
           ) : (
@@ -185,7 +185,7 @@ export default function PatientHomePage() {
                 <div key={appointment._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <Users className="w-5 h-5 text-green-600" />
+                      <UsersIcon className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
                       <p className="font-medium text-text-primary">Dr. {appointment.doctorId}</p>
@@ -219,14 +219,14 @@ export default function PatientHomePage() {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-                  <Search className="w-5 h-5 text-primary-600" />
+                  <SearchIcon className="w-5 h-5 text-primary-600" />
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-text-primary">Find Hospital</p>
                   <p className="text-sm text-text-muted">Search verified hospitals</p>
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
+              <ArrowRightIcon className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
             </button>
 
             <button
@@ -235,14 +235,14 @@ export default function PatientHomePage() {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <CalendarIcon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-text-primary">Book Appointment</p>
                   <p className="text-sm text-text-muted">Schedule a visit</p>
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
+              <ArrowRightIcon className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
             </button>
 
             <button
@@ -251,14 +251,14 @@ export default function PatientHomePage() {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                  <FileText className="w-5 h-5 text-green-600" />
+                  <FileTextIcon className="w-5 h-5 text-green-600" />
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-text-primary">View Records</p>
                   <p className="text-sm text-text-muted">Prescription history</p>
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
+              <ArrowRightIcon className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
             </button>
 
             <button
@@ -267,14 +267,14 @@ export default function PatientHomePage() {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-                  <Clock className="w-5 h-5 text-amber-600" />
+                  <ClockIcon className="w-5 h-5 text-amber-600" />
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-text-primary">Queue Status</p>
                   <p className="text-sm text-text-muted">Live tracking</p>
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
+              <ArrowRightIcon className="w-5 h-5 text-text-muted group-hover:text-primary-500 transition-colors" />
             </button>
           </div>
         </div>

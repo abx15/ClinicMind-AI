@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useUser, useIsAuthenticated, useAuthStore } from '@/stores/authStore'
-import { Menu, X, Search, User, Calendar, LogOut } from 'lucide-react'
+import { MenuIcon, XIcon, UserIcon, CalendarIcon, LogOutIcon } from '@/components/icons'
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -25,8 +25,8 @@ export default function Navbar() {
   ]
 
   const dashboardLinks = [
-    { href: '/dashboard/home', label: 'Dashboard', icon: User },
-    { href: '/dashboard/appointments', label: 'Appointments', icon: Calendar },
+    { href: '/dashboard/home', label: 'Dashboard', icon: UserIcon },
+    { href: '/dashboard/appointments', label: 'Appointments', icon: CalendarIcon },
   ]
 
   return (
@@ -78,7 +78,7 @@ export default function Navbar() {
                   onClick={handleLogout}
                   className="p-2 text-text-muted hover:text-text-primary transition-colors"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOutIcon className="w-4 h-4" />
                 </button>
               </div>
             ) : (
@@ -100,9 +100,9 @@ export default function Navbar() {
               className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-primary-50 transition-colors"
             >
               {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
+                <XIcon className="w-5 h-5" />
               ) : (
-                <Menu className="w-5 h-5" />
+                <MenuIcon className="w-5 h-5" />
               )}
             </button>
           </div>
@@ -152,7 +152,7 @@ export default function Navbar() {
                       }}
                       className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors font-medium"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOutIcon className="w-4 h-4" />
                       <span>Logout</span>
                     </button>
                   </div>

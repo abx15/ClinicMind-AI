@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Clock, Users, Eye, FileText } from 'lucide-react'
+import { CalendarIcon, ClockIcon, UsersIcon, EyeIcon, FileTextIcon } from '@/components/icons'
 import { Prescription } from '@clinicmind/types'
 
 interface PrescriptionCardProps {
@@ -21,7 +21,7 @@ interface PrescriptionCardProps {
 export default function PrescriptionCard({ prescription, onView }: PrescriptionCardProps) {
   const [showMore, setShowMore] = useState(false)
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -29,7 +29,7 @@ export default function PrescriptionCard({ prescription, onView }: PrescriptionC
     })
   }
 
-  const formatTime = (date: string) => {
+  const formatTime = (date: string | Date) => {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -52,7 +52,7 @@ export default function PrescriptionCard({ prescription, onView }: PrescriptionC
       <div className="flex items-start space-x-4">
         {/* Avatar */}
         <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-          <FileText className="w-6 h-6 text-green-600" />
+          <FileTextIcon className="w-6 h-6 text-green-600" />
         </div>
 
         {/* Content */}
@@ -80,11 +80,11 @@ export default function PrescriptionCard({ prescription, onView }: PrescriptionC
           {/* Date */}
           <div className="flex items-center space-x-4 text-sm text-text-muted mb-4">
             <div className="flex items-center">
-              <Calendar className="w-4 h-4 mr-1" />
+              <CalendarIcon className="w-4 h-4 mr-1" />
               <span>{formatDate(prescription.createdAt)}</span>
             </div>
             <div className="flex items-center">
-              <Clock className="w-4 h-4 mr-1" />
+              <ClockIcon className="w-4 h-4 mr-1" />
               <span>{formatTime(prescription.createdAt)}</span>
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function PrescriptionCard({ prescription, onView }: PrescriptionC
               onClick={onView}
               className="btn-primary flex items-center space-x-2"
             >
-              <Eye className="w-4 h-4" />
+              <EyeIcon className="w-4 h-4" />
               <span>View Full Prescription</span>
             </button>
           </div>

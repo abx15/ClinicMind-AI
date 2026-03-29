@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchIcon } from '@/components/icons'
 
 interface EmptyStateProps {
   title: string
@@ -19,7 +19,7 @@ export default function EmptyState({
     <div className="flex flex-col items-center justify-center py-16 px-4">
       {icon || (
         <div className="w-24 h-24 bg-primary-50 rounded-full flex items-center justify-center mb-6">
-          <Search className="w-12 h-12 text-primary-500" />
+          <SearchIcon className="w-12 h-12 text-primary-500" />
         </div>
       )}
       

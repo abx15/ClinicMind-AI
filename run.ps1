@@ -67,7 +67,7 @@ Start-Process -FilePath "cmd" -ArgumentList "/k", "pnpm dev" -WindowStyle Normal
 
 Write-Host "🤖 Starting AI Service..." -ForegroundColor Green
 Start-Sleep -Seconds 3
-$aiCommand = "cd backend\ai-service && venv\Scripts\activate && uvicorn app.main:app --reload --port 8000"
+$aiCommand = 'cd backend\ai-service & venv\Scripts\activate & uvicorn app.main:app --reload --port 8000'
 Start-Process -FilePath "cmd" -ArgumentList "/k", $aiCommand -WindowStyle Normal
 
 Write-Host ""

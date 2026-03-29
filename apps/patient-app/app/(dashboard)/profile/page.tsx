@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { User, Calendar, Phone, Mail, UserCircle, Save, Camera, X } from 'lucide-react'
+import { UserIcon, CalendarIcon, PhoneIcon, MailIcon, UserCircleIcon, SaveIcon, CameraIcon, XIcon } from '@/components/icons'
 import { toast } from 'sonner'
 import { useUser, useAuthStore } from '@/stores/authStore'
 import { authService } from '@/lib/services/authService'
@@ -37,18 +37,20 @@ export default function ProfilePage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user?.name || '',
-      phone: user?.phone || '',
-      dateOfBirth: user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
-      gender: user?.gender || undefined,
-      bloodGroup: user?.bloodGroup || '',
-      allergies: user?.allergies || [],
-      emergencyContact: user?.emergencyContact || {
+      phone: (user as any)?.phone || '',
+      dateOfBirth: (user as any)?.dateOfBirth ? new Date((user as any).dateOfBirth).toISOString().split('T')[0] : '',
+      gender: (user as any)?.gender || undefined,
+      bloodGroup: (user as any)?.bloodGroup || '',
+      allergies: (user as any)?.allergies || [],
+      emergencyContact: (user as any)?.emergencyContact || {
         name: '',
         phone: '',
         relation: '',
@@ -146,7 +148,7 @@ export default function ProfilePage() {
             onClick={() => setIsEditing(true)}
             className="btn-primary flex items-center space-x-2"
           >
-            <UserCircle className="w-4 h-4" />
+            <UserCircleIcon className="w-4 h-4" />
             <span>Edit Profile</span>
           </button>
         )}
@@ -166,13 +168,13 @@ export default function ProfilePage() {
                     className="w-24 h-24 rounded-full object-cover"
                   />
                 ) : (
-                  <UserCircle className="w-24 h-24 text-primary-500" />
+                  <UserCircleIcon className="w-24 h-24 text-primary-500" />
                 )}
               </div>
               {isEditing && (
                 <div className="absolute bottom-0 right-0">
                   <label className="cursor-pointer bg-white rounded-full p-2 shadow-lg border border-gray-200 hover:border-primary-500">
-                    <Camera className="w-4 h-4 text-gray-600" />
+                    <CameraIcon className="w-4 h-4 text-gray-600" />
                     <input
                       type="file"
                       accept="image/*"
@@ -239,7 +241,7 @@ export default function ProfilePage() {
                 <input
                   type="date"
                   {...register('dateOfBirth')}
-                  value={formatDateForInput(watch('dateOfBirth'))}
+                  value={formatDateForInput(watch?.('dateOfBirth'))}
                   onChange={(e) => {
                     setValue('dateOfBirth', e.target.value)
                   }}

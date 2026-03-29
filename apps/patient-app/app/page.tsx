@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Search, MapPin, Users, Star, TrendingUp } from 'lucide-react'
+import { SearchIcon, MapPinIcon, UsersIcon, StarIcon, TrendingUpIcon } from '@/components/icons'
 import Navbar from '@/components/layout/Navbar'
 import HospitalCard from '@/components/hospital/HospitalCard'
 import FilterChips from '@/components/hospital/FilterChips'
@@ -44,7 +44,7 @@ export default function HomePage() {
             <div className="max-w-2xl mx-auto mb-12">
               <div className="card p-2 flex items-center space-x-2">
                 <div className="flex-1 flex items-center space-x-3 px-4">
-                  <Search className="w-5 h-5 text-text-muted" />
+                  <SearchIcon className="w-5 h-5 text-text-muted" />
                   <input
                     type="text"
                     placeholder="Search hospitals, doctors, specialization, city…"
@@ -76,7 +76,7 @@ export default function HomePage() {
               <div className="text-center">
                 <div className="text-3xl font-bold font-heading mb-2 flex items-center justify-center">
                   4.8
-                  <Star className="w-6 h-6 ml-1 fill-current" />
+                  <StarIcon className="w-6 h-6 ml-1 fill-current" />
                 </div>
                 <div className="text-primary-100">Rating</div>
               </div>

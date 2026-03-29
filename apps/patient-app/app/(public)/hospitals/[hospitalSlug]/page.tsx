@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useRouter } from 'next/navigation'
-import { MapPin, Phone, Mail, Globe, Star, CheckCircle, Users, Award } from 'lucide-react'
+import { MapPinIcon, PhoneIcon, MailIcon, GlobeIcon, StarIcon, CheckCircleIcon, UsersIcon, AwardIcon } from '@/components/icons'
 import Navbar from '@/components/layout/Navbar'
 import DoctorCard from '@/components/hospital/DoctorCard'
 import BookingModal from '@/components/appointment/BookingModal'
@@ -104,7 +104,7 @@ export default function HospitalDetailPage() {
                 </h1>
                 {hospital.status === 'verified' && (
                   <div className="flex items-center space-x-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                    <CheckCircle className="w-4 h-4" />
+                    <CheckCircleIcon className="w-4 h-4" />
                     <span>Verified</span>
                   </div>
                 )}
@@ -112,15 +112,15 @@ export default function HospitalDetailPage() {
 
               <div className="flex flex-wrap items-center gap-4 text-text-muted mb-4">
                 <div className="flex items-center">
-                  <MapPin className="w-4 h-4 mr-1" />
+                  <MapPinIcon className="w-4 h-4 mr-1" />
                   <span>{hospital.address}, {hospital.city}</span>
                 </div>
                 <div className="flex items-center">
-                  <Phone className="w-4 h-4 mr-1" />
+                  <PhoneIcon className="w-4 h-4 mr-1" />
                   <span>+91 98765 43210</span>
                 </div>
                 <div className="flex items-center">
-                  <Mail className="w-4 h-4 mr-1" />
+                  <MailIcon className="w-4 h-4 mr-1" />
                   <span>info@{hospital.name.toLowerCase().replace(/\s+/g, '')}.com</span>
                 </div>
               </div>
@@ -128,21 +128,21 @@ export default function HospitalDetailPage() {
               {/* Stats */}
               <div className="flex flex-wrap gap-6 mb-4">
                 <div className="flex items-center space-x-2">
-                  <Users className="w-5 h-5 text-primary-500" />
+                  <UsersIcon className="w-5 h-5 text-primary-500" />
                   <div>
                     <div className="font-semibold text-text-primary">{doctors.length}</div>
                     <div className="text-sm text-text-muted">Verified Doctors</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                  <StarIcon className="w-5 h-5 text-yellow-400 fill-current" />
                   <div>
                     <div className="font-semibold text-text-primary">4.8</div>
                     <div className="text-sm text-text-muted">Rating</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-purple-500" />
+                  <AwardIcon className="w-5 h-5 text-purple-500" />
                   <div>
                     <div className="font-semibold text-text-primary capitalize">{hospital.plan}</div>
                     <div className="text-sm text-text-muted">Plan</div>

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation'
 import { useUser, useAuthStore } from '@/stores/authStore'
-import { LogOut, Menu, X } from 'lucide-react'
+import { LogOutIcon, MenuIcon, XIcon, HomeIcon, SearchIcon, CalendarIcon, ClockIcon, FileIcon, UserIcon } from '@/components/icons'
 
 interface SidebarProps {
   onClose?: () => void
@@ -18,56 +18,32 @@ export default function Sidebar({ onClose }: SidebarProps) {
     {
       label: 'Home',
       href: '/dashboard/home',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      ),
+      icon: <HomeIcon className="w-5 h-5" />,
     },
     {
       label: 'Find Hospitals',
       href: '/hospitals',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      ),
+      icon: <SearchIcon className="w-5 h-5" />,
     },
     {
       label: 'Appointments',
       href: '/dashboard/appointments',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      ),
+      icon: <CalendarIcon className="w-5 h-5" />,
     },
     {
       label: 'Queue Status',
       href: '/dashboard/queue',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <ClockIcon className="w-5 h-5" />,
     },
     {
       label: 'My Records',
       href: '/dashboard/records',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      ),
+      icon: <FileIcon className="w-5 h-5" />,
     },
     {
       label: 'Profile',
       href: '/dashboard/profile',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      ),
+      icon: <UserIcon className="w-5 h-5" />,
     },
   ]
 
@@ -104,7 +80,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
             onClick={onClose}
             className="lg:hidden text-white hover:bg-primary-600 p-1 rounded"
           >
-            <X className="w-5 h-5" />
+            <XIcon className="w-5 h-5" />
           </button>
         </div>
 
@@ -151,7 +127,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
           onClick={handleLogout}
           className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-200 hover:bg-primary-600 hover:text-white transition-colors"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOutIcon className="w-5 h-5" />
           <span className="font-medium">Logout</span>
         </button>
       </div>

@@ -23,12 +23,12 @@
     "sonner": "^1",
     "clsx": "^2",
     "tailwind-merge": "^2",
-    "class-variance-authority": "^0.7",
-    "lucide-react": "^0.263"
+    "class-variance-authority": "^0.7"
   },
   "devDependencies": {
     "typescript": "^5",
     "tailwindcss": "^3",
+    "autoprefixer": "^10",
     "@types/react": "^18"
   }
 }

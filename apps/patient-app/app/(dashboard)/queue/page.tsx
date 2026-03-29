@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { Search, Clock, Users, Wifi, WifiOff } from 'lucide-react'
+import { SearchIcon, ClockIcon, UsersIcon, WifiIcon, WifiOffIcon } from '@/components/icons'
 import { useQueueSocket } from '@/hooks/useQueueSocket'
 import { queueService } from '@/lib/services/queueService'
 import { QueueToken } from '@clinicmind/types'
@@ -98,7 +98,7 @@ export default function QueuePage() {
           onAction={handleJoinQueue}
           icon={
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock className="w-8 h-8 text-gray-400" />
+              <ClockIcon className="w-8 h-8 text-gray-400" />
             </div>
           }
         />

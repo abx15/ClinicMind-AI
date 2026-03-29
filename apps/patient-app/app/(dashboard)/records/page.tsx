@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { FileText, Calendar, Download, Print, Eye, X } from 'lucide-react'
+import { FileTextIcon, CalendarIcon, DownloadIcon, PrinterIcon, EyeIcon, XIcon } from '@/components/icons'
 import { useUser } from '@/stores/authStore'
 import { prescriptionService } from '@/lib/services/prescriptionService'
 import { Prescription } from '@clinicmind/types'
@@ -58,7 +58,7 @@ export default function RecordsPage() {
         
         <div className="flex items-center space-x-3">
           <button className="btn-outline flex items-center space-x-2">
-            <Download className="w-4 h-4" />
+            <DownloadIcon className="w-4 h-4" />
             <span>Export All</span>
           </button>
         </div>
@@ -102,7 +102,7 @@ export default function RecordsPage() {
           onAction={() => window.location.href = '/dashboard/appointments'}
           icon={
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-gray-400" />
+              <FileTextIcon className="w-8 h-8 text-gray-400" />
             </div>
           }
         />

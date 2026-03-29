@@ -4,6 +4,8 @@ export interface Medication {
   frequency: string
   duration: string
   instructions?: string
+  quantity?: string | number
+  refills?: string | number
 }
 
 export interface Prescription {
@@ -16,5 +18,6 @@ export interface Prescription {
   diagnosis: string
   notes?: string
   voiceTranscript?: string
+  followUpDate?: Date
   createdAt: Date
 }

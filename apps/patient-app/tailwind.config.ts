@@ -2,42 +2,60 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    '../../packages/ui/src/**/*.{ts,tsx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
         primary: {
-          50: '#E1F5EE',
-          100: '#C5EDE1',
-          500: '#0F6E56',
-          600: '#094D3C',
-          700: '#0B2920',
+          DEFAULT: '#0F6E56',
+          dark:    '#094D3C',
+          light:   '#E1F5EE',
+          medium:  '#5DCAA5',
         },
         accent: {
-          blue: '#1D63B5',
-          amber: '#B86E0A',
-          red: '#A32D2D',
+          DEFAULT: '#1D63B5',
+          light:   '#E6F1FB',
         },
-        text: {
-          primary: '#1A2420',
-          secondary: '#4A5E58',
-          muted: '#8A9E98',
+        amber: {
+          DEFAULT: '#B86E0A',
+          light:   '#FEF3E2',
         },
-        border: '#E2E8E4',
-        background: '#F4F6F4',
-        card: '#FFFFFF',
+        danger: {
+          DEFAULT: '#A32D2D',
+          light:   '#FCEBEB',
+        },
+        purple: {
+          DEFAULT: '#534AB7',
+          light:   '#EEEDFE',
+        },
+        sidebar: '#0B2920',
+        card:    '#FFFFFF',
+        'text-primary':   '#1A2420',
+        'text-secondary': '#4A5E58',
+        'text-muted':     '#8A9E98',
+        border:           '#E2E8E4',
+        background:       '#F4F6F4',
       },
       fontFamily: {
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
-        heading: ['Syne', 'system-ui', 'sans-serif'],
+        sans:     ['var(--font-dm-sans)', 'sans-serif'],
+        heading:  ['var(--font-syne)',    'sans-serif'],
+        'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
+        syne:     ['var(--font-syne)',    'sans-serif'],
       },
       borderRadius: {
-        card: '16px',
-        component: '12px',
-        button: '8px',
+        '2xl': '16px',
+        '3xl': '20px',
+        '4xl': '24px',
+      },
+      boxShadow: {
+        card: '0 1px 3px rgba(0,0,0,0.06)',
+        md:   '0 4px 16px rgba(0,0,0,0.08)',
+        lg:   '0 8px 32px rgba(0,0,0,0.10)',
       },
     },
   },

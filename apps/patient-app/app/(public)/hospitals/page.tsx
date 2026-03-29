@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react'
+import { SearchIcon, FilterIcon, ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
 import Navbar from '@/components/layout/Navbar'
 import HospitalCard from '@/components/hospital/HospitalCard'
 import FilterChips from '@/components/hospital/FilterChips'
@@ -101,7 +101,7 @@ export default function HospitalsPage() {
           <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="card p-6 sticky top-24">
               <h3 className="font-semibold text-text-primary mb-4 flex items-center">
-                <Filter className="w-4 h-4 mr-2" />
+                <FilterIcon className="w-4 h-4 mr-2" />
                 Filters
               </h3>
               
@@ -111,7 +111,7 @@ export default function HospitalsPage() {
                   Search
                 </label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted" />
+                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted" />
                   <input
                     type="text"
                     placeholder="Hospital name..."
@@ -163,7 +163,7 @@ export default function HospitalsPage() {
             {/* Mobile Search & Filters */}
             <div className="lg:hidden mb-6 space-y-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input
                   type="text"
                   placeholder="Search hospitals..."
@@ -251,7 +251,7 @@ export default function HospitalsPage() {
                         disabled={currentPage === 1}
                         className="p-2 rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-50 transition-colors"
                       >
-                        <ChevronLeft className="w-4 h-4" />
+                        <ChevronLeftIcon className="w-4 h-4" />
                       </button>
                       
                       <div className="flex items-center space-x-1">
@@ -288,7 +288,7 @@ export default function HospitalsPage() {
                         disabled={currentPage === totalPages}
                         className="p-2 rounded-lg border border-border disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-50 transition-colors"
                       >
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRightIcon className="w-4 h-4" />
                       </button>
                     </div>
                   </div>

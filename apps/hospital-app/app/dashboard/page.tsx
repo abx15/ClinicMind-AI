@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
-import { Calendar, Users, TrendingUp, Clock } from 'lucide-react'
+import { CalendarIcon, UsersIcon, TrendingUpIcon, ClockIcon } from '@/components/icons'
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -13,28 +13,28 @@ export default function DashboardPage() {
       title: 'Today\'s Appointments',
       value: '24',
       change: '+3 from yesterday',
-      icon: Calendar,
+      icon: CalendarIcon,
       color: 'teal'
     },
     {
       title: 'Total Patients',
       value: '1,247',
       change: '+18 this week',
-      icon: Users,
+      icon: UsersIcon,
       color: 'blue'
     },
     {
       title: 'Queue Status',
       value: 'Active',
       change: '12 patients waiting',
-      icon: Clock,
+      icon: ClockIcon,
       color: 'amber'
     },
     {
       title: 'Revenue This Month',
       value: '₹84,500',
       change: '+12% vs last month',
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
       color: 'purple'
     }
   ]
