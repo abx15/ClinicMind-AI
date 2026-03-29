@@ -236,7 +236,6 @@ export default function SearchPage() {
                   <HospitalCard
                     key={hospital._id}
                     hospital={hospital}
-                    onClick={() => handleHospitalClick(hospital)}
                   />
                 ))}
               </div>
@@ -260,7 +259,7 @@ export default function SearchPage() {
                   <DoctorCard
                     key={doctor._id}
                     doctor={doctor}
-                    onBook={() => handleBookAppointment(doctor._id)}
+                    onBookAppointment={() => handleBookAppointment(doctor._id)}
                   />
                 ))}
               </div>
