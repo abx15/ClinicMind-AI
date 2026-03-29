@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import Providers from '@/providers'
+import Providers from '../providers/Providers'
 
 export const metadata: Metadata = {
   title: 'ClinicMind Admin - Super Admin Portal',
