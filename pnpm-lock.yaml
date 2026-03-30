@@ -146,13 +146,13 @@ importers:
         specifier: ^18
         version: 18.3.28
       autoprefixer:
-        specifier: ^10.4.27
+        specifier: ^10.4.20
         version: 10.4.27(postcss@8.5.8)
       postcss:
-        specifier: ^8.5.8
+        specifier: ^8.4.47
         version: 8.5.8
       tailwindcss:
-        specifier: ^3.4.19
+        specifier: ^3.4.17
         version: 3.4.19(tsx@4.21.0)
       typescript:
         specifier: ^5
@@ -219,13 +219,13 @@ importers:
         specifier: ^18
         version: 18.3.28
       autoprefixer:
-        specifier: ^10.4.27
+        specifier: ^10.4.20
         version: 10.4.27(postcss@8.5.8)
       postcss:
-        specifier: ^8.5.8
+        specifier: ^8.4.47
         version: 8.5.8
       tailwindcss:
-        specifier: ^3.4.19
+        specifier: ^3.4.17
         version: 3.4.19(tsx@4.21.0)
       typescript:
         specifier: ^5
@@ -951,8 +951,8 @@ packages:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
     engines: {node: '>= 6'}
 
-  caniuse-lite@1.0.30001781:
-    resolution: {integrity: sha512-RdwNCyMsNBftLjW6w01z8bKEvT6e/5tpPVEgtn22TiLGlstHOVecsX2KHFkD5e/vRnIE4EGzpuIODb3mtswtkw==}
+  caniuse-lite@1.0.30001782:
+    resolution: {integrity: sha512-dZcaJLJeDMh4rELYFw1tvSn1bhZWYFOt468FcbHHxx/Z/dFidd1I6ciyFdi3iwfQCyOjqo9upF6lGQYtMiJWxw==}
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -2419,7 +2419,7 @@ snapshots:
   autoprefixer@10.4.27(postcss@8.5.8):
     dependencies:
       browserslist: 4.28.1
-      caniuse-lite: 1.0.30001781
+      caniuse-lite: 1.0.30001782
       fraction.js: 5.3.4
       picocolors: 1.1.1
       postcss: 8.5.8
@@ -2465,7 +2465,7 @@ snapshots:
   browserslist@4.28.1:
     dependencies:
       baseline-browser-mapping: 2.10.12
-      caniuse-lite: 1.0.30001781
+      caniuse-lite: 1.0.30001782
       electron-to-chromium: 1.5.328
       node-releases: 2.0.36
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
@@ -2494,7 +2494,7 @@ snapshots:
 
   camelcase-css@2.0.1: {}
 
-  caniuse-lite@1.0.30001781: {}
+  caniuse-lite@1.0.30001782: {}
 
   chokidar@3.6.0:
     dependencies:
@@ -3086,7 +3086,7 @@ snapshots:
       '@swc/counter': 0.1.3
       '@swc/helpers': 0.5.13
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001781
+      caniuse-lite: 1.0.30001782
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
