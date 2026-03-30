@@ -1,15 +1,19 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { billingService } from '../services/billing.service';
-import { authenticate } from '../middlewares/auth';
+import { authenticate, AuthRequest } from '../middlewares/auth';
 import { requireRole } from '../middlewares/role';
 
 const router = Router();
 
 // POST /billing/subscribe - Create subscription (hospital_admin only)
-router.post('/subscribe', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/subscribe', authenticate, requireRole('hospital_admin'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { plan } = req.body;
-    const hospitalId = req.user.hospitalId;
+    const hospitalId = req.user?.hospitalId;
+    
+    if (!hospitalId) {
+      return res.status(400).json({ error: 'Hospital ID not found' });
+    }
 
     if (!plan || !['pro', 'growth'].includes(plan)) {
       return res.status(400).json({ error: 'Invalid plan. Must be pro or growth' });
@@ -23,10 +27,10 @@ router.post('/subscribe', authenticate, requireRole('hospital_admin'), async (re
 });
 
 // GET /billing/subscription - Get current subscription (hospital_admin only)
-router.get('/subscription', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/subscription', authenticate, requireRole('hospital_admin'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const hospitalId = req.user.hospitalId;
-    const subscription = await billingService.getSubscription(hospitalId);
+    const hospitalId = req.user?.hospitalId;
+    const subscription = await billingService.getSubscription(hospitalId as string);
     res.json(subscription);
   } catch (error: any) {
     next(error);
@@ -48,10 +52,10 @@ router.post('/webhook', async (req: Request, res: Response, next: NextFunction) 
 });
 
 // POST /billing/cancel - Cancel subscription (hospital_admin only)
-router.post('/cancel', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/cancel', authenticate, requireRole('hospital_admin'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const hospitalId = req.user.hospitalId;
-    const result = await billingService.cancelSubscription(hospitalId);
+    const hospitalId = req.user?.hospitalId;
+    const result = await billingService.cancelSubscription(hospitalId as string);
     res.json(result);
   } catch (error: any) {
     next(error);

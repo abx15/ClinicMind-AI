@@ -44,34 +44,34 @@ export default function HomePage() {
   const avgRating = 4.8 // Keep as static for now
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-surface">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-400 text-white">
+      <section className="relative bg-gradient-to-br from-primary to-primary-medium text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold font-heading mb-6">
               Find Verified Hospitals & Doctors Near You
             </h1>
-            <p className="text-xl mb-12 text-primary-100 max-w-2xl mx-auto">
+            <p className="text-xl mb-12 text-primary-light max-w-2xl mx-auto">
               All hospitals verified by ClinicMind. Book appointments in 30 seconds.
             </p>
 
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mb-12">
-              <div className="card p-2 flex items-center space-x-2">
+              <div className="bg-white rounded-2xl p-2 flex items-center space-x-2 shadow-card">
                 <div className="flex-1 flex items-center space-x-3 px-4">
-                  <SearchIcon className="w-5 h-5 text-text-muted" />
+                  <SearchIcon className="w-5 h-5 text-text-3" />
                   <input
                     type="text"
                     placeholder="Search hospitals, doctors, specialization, city…"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 py-3 bg-transparent text-text-primary placeholder-text-muted outline-none"
+                    className="flex-1 py-3 bg-transparent text-text-1 placeholder-text-3 outline-none"
                   />
                 </div>
-                <button className="btn-primary px-6 py-3">
+                <button className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-xl transition-colors">
                   Search
                 </button>
               </div>
@@ -81,7 +81,7 @@ export default function HomePage() {
             <div className="flex flex-wrap justify-center gap-4 mb-8">
               <a
                 href="/register"
-                className="inline-flex items-center px-6 py-3 bg-white text-primary-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Register as Patient
               </a>
@@ -105,26 +105,26 @@ export default function HomePage() {
                 <div className="text-3xl font-bold font-heading mb-2">
                   {isLoading ? '...' : totalHospitals.toLocaleString()}
                 </div>
-                <div className="text-primary-100">Verified Hospitals</div>
+                <div className="text-primary-light">Verified Hospitals</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold font-heading mb-2">
                   {totalDoctors > 0 ? totalDoctors.toLocaleString() : '...'}
                 </div>
-                <div className="text-primary-100">Active Doctors</div>
+                <div className="text-primary-light">Active Doctors</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold font-heading mb-2">
                   {totalPatients > 0 ? `${(totalPatients / 1000).toFixed(0)}K+` : '...'}
                 </div>
-                <div className="text-primary-100">Patients</div>
+                <div className="text-primary-light">Patients</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold font-heading mb-2 flex items-center justify-center">
                   {avgRating}
                   <StarIcon className="w-6 h-6 ml-1 fill-current" />
                 </div>
-                <div className="text-primary-100">Rating</div>
+                <div className="text-primary-light">Rating</div>
               </div>
             </div>
           </div>
@@ -182,24 +182,24 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-primary-700 text-white py-12">
+      <footer className="bg-primary-dark text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-primary-500 font-bold text-lg font-heading">C</span>
+                  <span className="text-primary font-bold text-lg font-heading">C</span>
                 </div>
                 <span className="text-xl font-bold font-heading">ClinicMind</span>
               </div>
-              <p className="text-primary-200">
+              <p className="text-primary-light">
                 Your trusted partner in healthcare management.
               </p>
             </div>
             
             <div>
               <h3 className="font-semibold font-heading mb-4">For Patients</h3>
-              <ul className="space-y-2 text-primary-200">
+              <ul className="space-y-2 text-primary-light">
                 <li>Find Hospitals</li>
                 <li>Book Appointments</li>
                 <li>Health Records</li>
@@ -208,7 +208,7 @@ export default function HomePage() {
             
             <div>
               <h3 className="font-semibold font-heading mb-4">For Hospitals</h3>
-              <ul className="space-y-2 text-primary-200">
+              <ul className="space-y-2 text-primary-light">
                 <li>Manage Appointments</li>
                 <li>Queue Management</li>
                 <li>Digital Records</li>
@@ -217,7 +217,7 @@ export default function HomePage() {
             
             <div>
               <h3 className="font-semibold font-heading mb-4">Contact</h3>
-              <ul className="space-y-2 text-primary-200">
+              <ul className="space-y-2 text-primary-light">
                 <li>support@clinicmind.in</li>
                 <li>+91 98765 43210</li>
                 <li>manage.clinicmind.in</li>
@@ -225,7 +225,7 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div className="border-t border-primary-600 mt-8 pt-8 text-center text-primary-200">
+          <div className="border-t border-primary mt-8 pt-8 text-center text-primary-light">
             <p>&copy; 2024 ClinicMind. All rights reserved.</p>
           </div>
         </div>

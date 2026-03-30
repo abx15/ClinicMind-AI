@@ -35,10 +35,10 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg font-heading">C</span>
             </div>
-            <span className="text-xl font-bold text-primary-500 font-heading">
+            <span className="text-xl font-bold text-primary font-heading">
               ClinicMind
             </span>
           </Link>
@@ -61,32 +61,32 @@ export default function Navbar() {
             {isAuthenticated && user ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-primary-500 font-medium text-sm">
+                  <div className="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center">
+                    <span className="text-primary font-medium text-sm">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-text-primary font-medium">{user.name}</span>
+                  <span className="text-text-1 font-medium">{user.name}</span>
                 </div>
                 <Link
                   href="/dashboard/appointments"
-                  className="btn-outline text-sm py-2"
+                  className="border border-primary text-primary hover:bg-primary hover:text-white text-sm py-2 px-4 rounded-lg transition-colors"
                 >
                   Appointments
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-text-muted hover:text-text-primary transition-colors"
+                  className="p-2 text-text-3 hover:text-text-1 transition-colors"
                 >
                   <LogOutIcon className="w-4 h-4" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
-                <Link href="/login" className="btn-outline text-sm py-2">
+                <Link href="/login" className="border border-primary text-primary hover:bg-primary hover:text-white text-sm py-2 px-4 rounded-lg transition-colors">
                   Login
                 </Link>
-                <Link href="/register" className="btn-primary text-sm py-2">
+                <Link href="/register" className="bg-primary hover:bg-primary-dark text-white text-sm py-2 px-4 rounded-lg transition-colors">
                   Register
                 </Link>
               </div>
@@ -97,7 +97,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-primary-50 transition-colors"
+              className="p-2 rounded-lg text-text-3 hover:text-text-1 hover:bg-primary-light transition-colors"
             >
               {isMobileMenuOpen ? (
                 <XIcon className="w-5 h-5" />
@@ -116,7 +116,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-text-secondary hover:text-primary-500 transition-colors font-medium"
+                  className="text-text-2 hover:text-primary transition-colors font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -127,18 +127,18 @@ export default function Navbar() {
                 {isAuthenticated && user ? (
                   <div className="flex flex-col space-y-3">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                        <span className="text-primary-500 font-medium text-sm">
+                      <div className="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center">
+                        <span className="text-primary font-medium text-sm">
                           {user.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-text-primary font-medium">{user.name}</span>
+                      <span className="text-text-1 font-medium">{user.name}</span>
                     </div>
                     {dashboardLinks.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
-                        className="flex items-center space-x-2 text-text-secondary hover:text-primary-500 transition-colors font-medium"
+                        className="flex items-center space-x-2 text-text-2 hover:text-primary transition-colors font-medium"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <link.icon className="w-4 h-4" />
@@ -150,7 +150,7 @@ export default function Navbar() {
                         handleLogout()
                         setIsMobileMenuOpen(false)
                       }}
-                      className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors font-medium"
+                      className="flex items-center space-x-2 text-text-3 hover:text-text-1 transition-colors font-medium"
                     >
                       <LogOutIcon className="w-4 h-4" />
                       <span>Logout</span>
@@ -160,14 +160,14 @@ export default function Navbar() {
                   <div className="flex flex-col space-y-3">
                     <Link
                       href="/login"
-                      className="btn-outline text-center py-2"
+                      className="border border-primary text-primary hover:bg-primary hover:text-white text-center py-2 px-4 rounded-lg transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Login
                     </Link>
                     <Link
                       href="/register"
-                      className="btn-primary text-center py-2"
+                      className="bg-primary hover:bg-primary-dark text-white text-center py-2 px-4 rounded-lg transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Register

@@ -3,7 +3,10 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/authStore'
+import Navbar from '@/components/layout/Navbar'
 import AdminSidebar from '@/components/layout/AdminSidebar'
+import TopBar from '@/components/layout/TopBar'
+import { HomeIcon, ChartIcon, UsersIcon, SettingsIcon } from '@/components/icons'
 
 export default function DashboardLayout({
   children,
@@ -49,11 +52,81 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#F4F6F4] flex">
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto min-h-screen">
-        <div className="p-6">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Navbar />
+        <main className="flex-1 overflow-y-auto min-h-screen p-6 pb-20 lg:pb-6">
           {children}
+        </main>
+
+        {/* Mobile Bottom Navigation */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border">
+          <div className="flex items-center justify-around py-2">
+            <button
+              onClick={() => router.push('/dashboard/overview')}
+              className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+            >
+              <HomeIcon className="w-5 h-5" />
+              <span className="text-xs">Overview</span>
+            </button>
+            
+            <button
+              onClick={() => router.push('/dashboard/hospitals')}
+              className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+            >
+              <ChartIcon className="w-5 h-5" />
+              <span className="text-xs">Hospitals</span>
+            </button>
+            
+            <button
+              onClick={() => router.push('/dashboard/doctors')}
+              className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+            >
+              <UsersIcon className="w-5 h-5" />
+              <span className="text-xs">Doctors</span>
+            </button>
+            
+            <button
+              onClick={() => router.push('/dashboard/patients')}
+              className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+            >
+              <UsersIcon className="w-5 h-5" />
+              <span className="text-xs">Patients</span>
+            </button>
+            
+            <button
+              onClick={() => router.push('/dashboard/settings')}
+              className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+            >
+              <SettingsIcon className="w-5 h-5" />
+              <span className="text-xs">Settings</span>
+            </button>
+          </div>
+          
+          <button
+            onClick={() => router.push('/dashboard/doctors')}
+            className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+          >
+            <UsersIcon className="w-5 h-5" />
+            <span className="text-xs">Doctors</span>
+          </button>
+          
+          <button
+            onClick={() => router.push('/dashboard/patients')}
+            className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+          >
+            <UsersIcon className="w-5 h-5" />
+            <span className="text-xs">Patients</span>
+          </button>
+          
+          <button
+            onClick={() => router.push('/dashboard/settings')}
+            className="flex flex-col items-center gap-1 p-2 text-text-3 hover:text-primary"
+          >
+            <SettingsIcon className="w-5 h-5" />
+            <span className="text-xs">Settings</span>
+          </button>
         </div>
-      </main>
+      </div>
     </div>
   )
 }
