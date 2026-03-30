@@ -103,7 +103,11 @@ app.use(globalLimiter)
 app.use((req, res, next) => {
   const start = Date.now()
   
-  res.on('finish', () => {
+  // Store original methods
+  const originalEnd = res.end
+  const originalJson = res.json
+  
+  res.end = function(chunk?: any, encoding?: BufferEncoding) {
     const duration = Date.now() - start
     res.setHeader('X-Response-Time', `${duration}ms`)
     
@@ -111,7 +115,21 @@ app.use((req, res, next) => {
     if (duration > 500) {
       console.warn(`⚠️  Slow request: ${req.method} ${req.path} - ${duration}ms`)
     }
-  })
+    
+    return originalEnd.call(this, chunk, encoding)
+  }
+  
+  res.json = function(obj?: any) {
+    const duration = Date.now() - start
+    res.setHeader('X-Response-Time', `${duration}ms`)
+    
+    // Log slow requests
+    if (duration > 500) {
+      console.warn(`⚠️  Slow request: ${req.method} ${req.path} - ${duration}ms`)
+    }
+    
+    return originalJson.call(this, obj)
+  }
   
   next()
 })

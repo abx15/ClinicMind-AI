@@ -6,6 +6,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "tsx src/scripts/seed.ts",
+    "large-seed": "tsx src/scripts/large-seed.ts",
+    "staff-seed": "tsx src/scripts/staff-seed.ts",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {

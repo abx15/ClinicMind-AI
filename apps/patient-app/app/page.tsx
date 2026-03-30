@@ -122,7 +122,7 @@ export default function HomePage() {
     }),
   })
 
-  const hospitals = data?.hospitals || []
+  const hospitals = data?.data || []
 
   const specializations = [
     { id: '', label: 'All Specialties' },
