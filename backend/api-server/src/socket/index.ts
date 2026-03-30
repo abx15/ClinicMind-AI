@@ -1,7 +1,5 @@
 import type { Server, Socket } from 'socket.io'
 import jwt from 'jsonwebtoken'
-import Redis from 'ioredis'
-import { createAdapter } from '@socket.io/redis-adapter'
 import { User } from '../models/User.model'
 import { initializeQueueSocket } from './queue.socket'
 
@@ -12,17 +10,9 @@ interface AuthenticatedSocket extends Socket {
 }
 
 export function registerSocketHandlers(io: Server) {
-  // Create Redis adapter for scaling
-  const pubClient = new Redis({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    password: process.env.REDIS_PASSWORD,
-  })
-
-  const subClient = pubClient.duplicate()
-
-  io.adapter(createAdapter(pubClient, subClient))
-
+  // Redis adapter disabled for now - will work with memory adapter
+  console.log('📝 Socket.IO configured with memory adapter (Redis disabled)')
+  
   initializeQueueSocket(io)
 
   io.use(async (socket: AuthenticatedSocket, next) => {
