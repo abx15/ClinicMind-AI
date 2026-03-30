@@ -45,11 +45,9 @@ export default function Navbar() {
               <img 
                 src="/logo.png" 
                 alt="ClinicMind" 
-                className="w-8 h-8 rounded-lg"
+                className="w-30 h-10 rounded-lg"
               />
-              <span className="text-xl font-bold text-primary font-heading">
-                ClinicMind
-              </span>
+              
             </Link>
 
             {/* Desktop Navigation */}
