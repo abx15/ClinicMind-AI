@@ -6,24 +6,27 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useAuthStore, useIsAuthenticated } from '@/stores/authStore'
 import { apiClient } from '@/lib/apiClient'
-import { EyeIcon, EyeOffIcon, LoaderIcon } from '@/components/icons'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { EyeIcon, EyeOffIcon, LoaderIcon, CheckIcon, UsersIcon, ShieldIcon } from '@/components/icons'
+import { cn } from '@/lib/utils'
 
 const ROLE_REDIRECTS: Record<string, string> = {
   hospital_admin: '/dashboard/overview',
-  doctor:         '/dashboard/doctor/queue',
-  staff:          '/dashboard/staff/queue',
+  doctor: '/dashboard/doctor/queue',
+  staff: '/dashboard/staff/queue',
 }
 
 export default function HospitalLoginPage() {
-  const router          = useRouter()
+  const router = useRouter()
   const isAuthenticated = useIsAuthenticated()
-  const login           = useAuthStore(s => s.login)
+  const login = useAuthStore(s => s.login)
 
-  const [email,    setEmail]    = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
-  const [loading,  setLoading]  = useState(false)
-  const [error,    setError]    = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   // Already logged in → redirect
   useEffect(() => {
@@ -50,8 +53,16 @@ export default function HospitalLoginPage() {
 
       const allowedRoles = ['hospital_admin', 'doctor', 'staff']
       if (!allowedRoles.includes(user?.role)) {
-        setError('Access denied. This portal is for hospital staff only.')
+        setError('This portal is not for patients. Please use the patient app.')
         setLoading(false)
+        return
+      }
+
+      // Handle doctor verification status
+      if (user.role === 'doctor') {
+        const redirect = user.isVerified ? '/dashboard/doctor/queue' : '/dashboard/doctor/pending'
+        login({ user, token })
+        router.replace(redirect)
         return
       }
 
@@ -73,144 +84,210 @@ export default function HospitalLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F6F4] flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-sm">
-
-        {/* Card */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-xl border border-[#E2E8E4]">
-
-          {/* Header */}
-          <div className="bg-[#0B2920] px-8 py-7 text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Image
-                src="/logo.png"
-                alt="ClinicMind"
-                width={32}
-                height={32}
-                className="rounded-xl"
-              />
-              <span className="font-heading font-extrabold text-xl text-white tracking-tight">
-                ClinicMind
-              </span>
-            </div>
-            <p className="text-white/50 text-xs">Hospital Management Portal</p>
+    <div className="min-h-screen bg-surface flex">
+      {/* Left Panel - Features */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sidebar to-sidebar-dark flex-col justify-center px-12 py-16">
+        <div className="max-w-md mx-auto">
+          {/* Logo */}
+          <div className="flex items-center space-x-3 mb-12">
+            <Image
+              src="/logo.png"
+              alt="ClinicMind"
+              width={48}
+              height={48}
+              className="rounded-xl"
+            />
+            <h1 className="text-3xl font-bold text-white font-heading">
+              ClinicMind
+            </h1>
           </div>
 
-          {/* Form */}
-          <div className="px-8 py-7">
-            <h2 className="font-heading font-bold text-lg text-[#1A2420] mb-5">
-              Sign in to continue
-            </h2>
+          {/* Heading */}
+          <h2 className="text-3xl font-bold text-white mb-4 font-heading">
+            Hospital Management Portal
+          </h2>
+          <p className="text-white/80 mb-12 text-lg">
+            Complete healthcare management solution for modern hospitals
+          </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Feature List */}
+          <div className="space-y-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <UsersIcon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-1">Staff Management</h3>
+                <p className="text-white/70 text-sm">
+                  Manage doctors, nurses, and administrative staff efficiently
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <CheckIcon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-1">Queue Management</h3>
+                <p className="text-white/70 text-sm">
+                  Real-time patient queue and token system
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <ShieldIcon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-1">Secure & Compliant</h3>
+                <p className="text-white/70 text-sm">
+                  HIPAA compliant with enterprise-grade security
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Login Form */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center space-x-3 mb-8">
+            <Image
+              src="/logo.png"
+              alt="ClinicMind"
+              width={40}
+              height={40}
+              className="rounded-xl"
+            />
+            <h1 className="text-2xl font-bold text-primary font-heading">
+              ClinicMind
+            </h1>
+          </div>
+
+          {/* Login Card */}
+          <div className="bg-card rounded-2xl shadow-lg border border-border p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-text1 font-heading mb-2">
+                Welcome Back
+              </h2>
+              <p className="text-text3">
+                Sign in to access your hospital dashboard
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email */}
               <div>
-                <label className="text-sm font-medium text-[#1A2420] block mb-1.5">
-                  Email address
+                <label htmlFor="email" className="block text-sm font-medium text-text1 mb-2">
+                  Email Address
                 </label>
-                <input
-                  id="hospital-email"
+                <Input
+                  id="email"
                   type="email"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@hospital.com"
                   autoComplete="email"
-                  className="w-full border border-[#E2E8E4] rounded-xl px-3 py-2.5 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/15
-                             transition-all bg-white"
+                  required
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="text-sm font-medium text-[#1A2420] block mb-1.5">
+                <label htmlFor="password" className="block text-sm font-medium text-text1 mb-2">
                   Password
                 </label>
                 <div className="relative">
-                  <input
-                    id="hospital-password"
+                  <Input
+                    id="password"
                     type={showPass ? 'text' : 'password'}
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="••••••••"
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
                     autoComplete="current-password"
-                    className="w-full border border-[#E2E8E4] rounded-xl px-3 py-2.5 pr-10
-                               text-sm text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                               focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/15
-                               transition-all bg-white"
+                    required
+                    className="pr-10"
                   />
                   <button
                     type="button"
-                    id="toggle-password"
-                    onClick={() => setShowPass(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8A9E98]
-                               hover:text-[#4A5E58]"
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text3 hover:text-text2 transition-colors"
                   >
-                    {showPass ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
+                    {showPass ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
                   </button>
                 </div>
               </div>
 
               {/* Error */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3
-                                text-sm text-red-700">
-                  {error}
+                <div className="bg-danger-light border border-danger/20 rounded-lg p-3">
+                  <p className="text-sm text-danger">{error}</p>
                 </div>
               )}
 
               {/* Submit */}
-              <button
-                id="hospital-login-btn"
+              <Button
                 type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4
-                           bg-[#0F6E56] hover:bg-[#0a5c47] text-white font-semibold
-                           rounded-xl transition-colors disabled:opacity-60
-                           disabled:cursor-not-allowed text-sm mt-1"
+                loading={loading}
+                className="w-full"
+                size="lg"
               >
-                {loading && <LoaderIcon size={16} />}
                 {loading ? 'Signing in...' : 'Sign In'}
-              </button>
+              </Button>
             </form>
 
-            {/* Dev credentials */}
+            {/* Dev Credentials */}
             {process.env.NODE_ENV === 'development' && (
-              <div className="mt-5 p-3 bg-[#F4F6F4] rounded-xl border border-[#E2E8E4]
-                              space-y-1.5">
-                <p className="text-[10px] font-bold text-[#4A5E58] uppercase tracking-wide">
-                  Dev Credentials
+              <div className="mt-6 p-4 bg-surface rounded-lg border border-border">
+                <p className="text-xs font-semibold text-text2 uppercase tracking-wide mb-3">
+                  Development Credentials
                 </p>
-                <div className="text-xs text-[#4A5E58] space-y-0.5">
-                  <p><span className="font-semibold">Admin:</span> admin@apollo.com / Hospital@123</p>
-                  <p><span className="font-semibold">Doctor:</span> priya@apollo.com / Doctor@123</p>
-                  <p><span className="font-semibold">Staff:</span> staff@apollo.com / Staff@123</p>
+                <div className="text-xs text-text3 space-y-2">
+                  <div>
+                    <span className="font-medium text-text2">Admin:</span>
+                    <br />
+                    admin@apollo.com / Hospital@123
+                  </div>
+                  <div>
+                    <span className="font-medium text-text2">Doctor:</span>
+                    <br />
+                    priya@apollo.com / Doctor@123
+                  </div>
+                  <div>
+                    <span className="font-medium text-text2">Staff:</span>
+                    <br />
+                    staff@apollo.com / Staff@123
+                  </div>
                 </div>
               </div>
             )}
+
+            {/* Footer Links */}
+            <div className="mt-6 text-center space-y-3">
+              <Link
+                href="/doctor/setup"
+                className="block text-sm text-primary hover:text-primary-dark transition-colors"
+              >
+                First time doctor? Complete your profile →
+              </Link>
+              <Link
+                href="/register"
+                className="block text-sm text-text3 hover:text-text2 transition-colors"
+              >
+                Register your hospital →
+              </Link>
+            </div>
           </div>
-        </div>
 
-        {/* Footer links */}
-        <div className="mt-5 text-center space-y-2">
-          <Link
-            href="/doctor/setup"
-            className="block text-xs text-[#8A9E98] hover:text-[#0F6E56] transition-colors"
-          >
-            First time? Complete your doctor profile →
-          </Link>
-          <Link
-            href="/"
-            className="block text-xs text-[#8A9E98] hover:text-[#4A5E58] transition-colors"
-          >
-            ← Back to Home
-          </Link>
+          {/* Mobile Footer */}
+          <p className="text-center text-text3 text-xs mt-8 lg:hidden">
+            ClinicMind AI Platform · v1.0
+          </p>
         </div>
-
-        <p className="text-center text-[#8A9E98] text-[10px] mt-4">
-          ClinicMind AI Platform · v1.0
-        </p>
       </div>
     </div>
   )

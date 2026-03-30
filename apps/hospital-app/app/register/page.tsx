@@ -9,6 +9,9 @@ import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import { authService } from '@/lib/services/authService'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { cn } from '@/lib/utils'
 
 const registerSchema = z.object({
   name:            z.string().min(3, 'Hospital name required'),
@@ -113,48 +116,48 @@ export default function RegisterPage() {
   ]
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen bg-surface flex">
       {/* Left panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0F6E56] to-[#094D3C] p-12 flex-col justify-between">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sidebar to-sidebar-dark p-12 flex-col justify-between">
         <div>
           <div className="text-white">
-            <h1 className="font-syne font-bold text-3xl mb-2">ClinicMind</h1>
+            <h1 className="font-heading font-bold text-3xl mb-2">ClinicMind</h1>
             <p className="text-white/80 text-sm">Join 500+ hospitals transforming healthcare</p>
           </div>
         </div>
 
         <div className="space-y-8">
           <div className="text-white">
-            <h2 className="font-syne font-bold text-2xl mb-6">Why Choose ClinicMind?</h2>
+            <h2 className="font-heading font-bold text-2xl mb-6">Why Choose ClinicMind?</h2>
             
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                   ✓
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">AI-Powered Queue Management</h3>
-                  <p className="text-sm text-white/80">Reduce patient wait times by 60%</p>
+                  <p className="text-sm text-white/70">Reduce patient wait times by 60%</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                   ✓
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Voice Prescriptions</h3>
-                  <p className="text-sm text-white/80">AI-assisted prescription writing</p>
+                  <p className="text-sm text-white/70">AI-assisted prescription writing</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                   ✓
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Real-time Analytics</h3>
-                  <p className="text-sm text-white/80">Track performance and patient satisfaction</p>
+                  <p className="text-sm text-white/70">Track performance and patient satisfaction</p>
                 </div>
               </div>
             </div>
@@ -179,39 +182,41 @@ export default function RegisterPage() {
               {steps.map((step, index) => (
                 <div key={index} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors",
                       index + 1 === currentStep
-                        ? 'bg-[#0F6E56] text-white'
+                        ? "bg-primary text-white"
                         : index + 1 < currentStep
-                        ? 'bg-[#0F6E56] text-white'
-                        : 'bg-[#E2E8E4] text-[#8A9E98]'
-                    }`}
+                        ? "bg-primary text-white"
+                        : "bg-border text-text3"
+                    )}
                   >
                     {index + 1 < currentStep ? '✓' : index + 1}
                   </div>
                   {index < steps.length - 1 && (
                     <div
-                      className={`w-12 h-0.5 mx-2 transition-colors ${
-                        index + 1 < currentStep ? 'bg-[#0F6E56]' : 'bg-[#E2E8E4]'
-                      }`}
+                      className={cn(
+                        "w-12 h-0.5 mx-2 transition-colors",
+                        index + 1 < currentStep ? "bg-primary" : "bg-border"
+                      )}
                     />
                   )}
                 </div>
               ))}
             </div>
             <div className="text-center">
-              <h2 className="font-syne font-bold text-xl text-[#1A2420] mb-1">
+              <h2 className="font-heading font-bold text-xl text-text1 mb-1">
                 {steps[currentStep - 1].title}
               </h2>
-              <p className="text-sm text-[#8A9E98]">
+              <p className="text-sm text-text3">
                 {steps[currentStep - 1].description}
               </p>
             </div>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-[#FCEBEB] border border-[#A32D2D] rounded-lg">
-              <p className="text-sm text-[#A32D2D]">{error}</p>
+            <div className="mb-4 p-3 bg-danger-light border border-danger/20 rounded-lg">
+              <p className="text-sm text-danger">{error}</p>
             </div>
           )}
 
@@ -220,70 +225,56 @@ export default function RegisterPage() {
             {currentStep === 1 && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Hospital Name <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Hospital Name <span className="text-danger">*</span>
                   </label>
-                  <input
+                  <Input
                     {...register('name')}
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                     placeholder="Enter hospital name"
+                    error={errors.name?.message}
                   />
-                  {errors.name && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.name.message}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Full Address <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Full Address <span className="text-danger">*</span>
                   </label>
                   <textarea
                     {...register('address')}
                     rows={3}
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
+                    className="w-full border border-border rounded-lg px-4 py-3 text-sm
+                             text-text1 placeholder:text-text3 outline-none
+                             focus:border-primary focus:ring-2 focus:ring-primary/20
+                             transition-all bg-card"
                     placeholder="Enter complete address"
                   />
                   {errors.address && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.address.message}</p>
+                    <p className="mt-1 text-xs text-danger">{errors.address.message}</p>
                   )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                      City <span className="text-[#A32D2D]">*</span>
+                    <label className="block text-sm font-medium text-text1 mb-2">
+                      City <span className="text-danger">*</span>
                     </label>
-                    <input
+                    <Input
                       {...register('city')}
-                      className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                               text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                               focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                       placeholder="City"
+                      error={errors.city?.message}
                     />
-                    {errors.city && (
-                      <p className="mt-1 text-xs text-[#A32D2D]">{errors.city.message}</p>
-                    )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                      Pincode <span className="text-[#A32D2D]">*</span>
+                    <label className="block text-sm font-medium text-text1 mb-2">
+                      Pincode <span className="text-danger">*</span>
                     </label>
-                    <input
+                    <Input
                       {...register('pincode')}
-                      className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                               text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                               focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                       placeholder="6-digit"
                       maxLength={6}
+                      error={errors.pincode?.message}
                     />
-                    {errors.pincode && (
-                      <p className="mt-1 text-xs text-[#A32D2D]">{errors.pincode.message}</p>
-                    )}
                   </div>
                 </div>
               </>
@@ -294,92 +285,78 @@ export default function RegisterPage() {
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                      Hospital Phone <span className="text-[#A32D2D]">*</span>
+                    <label className="block text-sm font-medium text-text1 mb-2">
+                      Hospital Phone <span className="text-danger">*</span>
                     </label>
-                    <input
+                    <Input
                       {...register('phone')}
-                      className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                               text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                               focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                       placeholder="10-digit phone"
                       maxLength={10}
+                      error={errors.phone?.message}
                     />
-                    {errors.phone && (
-                      <p className="mt-1 text-xs text-[#A32D2D]">{errors.phone.message}</p>
-                    )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                      Hospital Email <span className="text-[#A32D2D]">*</span>
+                    <label className="block text-sm font-medium text-text1 mb-2">
+                      Hospital Email <span className="text-danger">*</span>
                     </label>
-                    <input
+                    <Input
                       {...register('email')}
                       type="email"
-                      className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                               text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                               focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                       placeholder="hospital@domain.com"
+                      error={errors.email?.message}
                     />
-                    {errors.email && (
-                      <p className="mt-1 text-xs text-[#A32D2D]">{errors.email.message}</p>
-                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    License Number <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    License Number <span className="text-danger">*</span>
                   </label>
-                  <input
+                  <Input
                     {...register('licenseNumber')}
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                     placeholder="Hospital license number"
+                    error={errors.licenseNumber?.message}
                   />
-                  {errors.licenseNumber && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.licenseNumber.message}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Specializations <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Specializations <span className="text-danger">*</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {SPECIALIZATIONS.map((spec) => (
                       <label
                         key={spec}
-                        className="flex items-center gap-2 p-2 border border-[#E2E8E4] rounded-lg cursor-pointer
-                                 hover:bg-[#F4F6F4] transition-colors"
+                        className="flex items-center gap-2 p-2 border border-border rounded-lg cursor-pointer
+                                 hover:bg-surface transition-colors"
                       >
                         <input
                           type="checkbox"
                           checked={watchedSpecializations.includes(spec)}
                           onChange={() => handleSpecializationToggle(spec)}
-                          className="text-[#0F6E56]"
+                          className="text-primary"
                         />
                         <span className="text-sm">{spec}</span>
                       </label>
                     ))}
                   </div>
                   {errors.specializations && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.specializations.message}</p>
+                    <p className="mt-1 text-xs text-danger">{errors.specializations.message}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
+                  <label className="block text-sm font-medium text-text1 mb-2">
                     Description (Optional)
                   </label>
                   <textarea
                     {...register('description')}
                     rows={3}
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
+                    className="w-full border border-border rounded-lg px-4 py-3 text-sm
+                             text-text1 placeholder:text-text3 outline-none
+                             focus:border-primary focus:ring-2 focus:ring-primary/20
+                             transition-all bg-card"
                     placeholder="Brief description of your hospital"
                   />
                 </div>
@@ -390,70 +367,50 @@ export default function RegisterPage() {
             {currentStep === 3 && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Admin Name <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Admin Name <span className="text-danger">*</span>
                   </label>
-                  <input
+                  <Input
                     {...register('adminName')}
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                     placeholder="Full name of hospital administrator"
+                    error={errors.adminName?.message}
                   />
-                  {errors.adminName && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.adminName.message}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Admin Email <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Admin Email <span className="text-danger">*</span>
                   </label>
-                  <input
+                  <Input
                     {...register('adminEmail')}
                     type="email"
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                     placeholder="admin@hospital.com"
+                    error={errors.adminEmail?.message}
                   />
-                  {errors.adminEmail && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.adminEmail.message}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Admin Phone <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Admin Phone <span className="text-danger">*</span>
                   </label>
-                  <input
+                  <Input
                     {...register('adminPhone')}
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                     placeholder="10-digit phone"
                     maxLength={10}
+                    error={errors.adminPhone?.message}
                   />
-                  {errors.adminPhone && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.adminPhone.message}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1A2420] mb-2">
-                    Admin Password <span className="text-[#A32D2D]">*</span>
+                  <label className="block text-sm font-medium text-text1 mb-2">
+                    Admin Password <span className="text-danger">*</span>
                   </label>
-                  <input
+                  <Input
                     {...register('adminPassword')}
                     type="password"
-                    className="w-full border border-[#E2E8E4] rounded-lg px-4 py-3 text-sm
-                             text-[#1A2420] placeholder:text-[#8A9E98] outline-none
-                             focus:border-[#0F6E56] focus:ring-2 focus:ring-[#0F6E56]/20"
                     placeholder="Create a strong password"
+                    error={errors.adminPassword?.message}
                   />
-                  {errors.adminPassword && (
-                    <p className="mt-1 text-xs text-[#A32D2D]">{errors.adminPassword.message}</p>
-                  )}
                 </div>
               </>
             )}
@@ -461,35 +418,32 @@ export default function RegisterPage() {
             {/* Navigation buttons */}
             <div className="flex gap-4 pt-4">
               {currentStep > 1 && (
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => setCurrentStep(currentStep - 1)}
-                  className="flex-1 py-3 border border-[#E2E8E4] text-[#1A2420] rounded-lg font-semibold
-                           hover:bg-[#F4F6F4] transition-colors"
+                  className="flex-1"
                 >
                   Back
-                </button>
+                </Button>
               )}
 
               {currentStep < 3 ? (
-                <button
+                <Button
                   type="button"
                   onClick={() => setCurrentStep(currentStep + 1)}
-                  className="flex-1 bg-[#0F6E56] text-white py-3 rounded-lg font-semibold
-                           hover:bg-[#094D3C] transition-colors"
+                  className="flex-1"
                 >
                   Next
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="submit"
-                  disabled={registerMutation.isPending}
-                  className="flex-1 bg-[#0F6E56] text-white py-3 rounded-lg font-semibold
-                           hover:bg-[#094D3C] transition-colors disabled:opacity-50
-                           disabled:cursor-not-allowed"
+                  loading={registerMutation.isPending}
+                  className="flex-1"
                 >
                   {registerMutation.isPending ? 'Registering...' : 'Register Hospital'}
-                </button>
+                </Button>
               )}
             </div>
           </form>

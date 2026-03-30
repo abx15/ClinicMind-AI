@@ -4,114 +4,102 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/stores/authStore'
 import { useAuthStore } from '@/stores/authStore'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { apiClient } from '@/lib/apiClient'
 
 export default function PendingPage() {
   const router = useRouter()
   const user = useUser()
   const { logout } = useAuthStore()
   const [submittedDate] = useState(new Date().toLocaleDateString())
+  const [isChecking, setIsChecking] = useState(false)
 
-  // Auto-poll every 30 seconds
+  // Auto-poll every 15 seconds
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const token = localStorage.getItem('clinicmind-auth')
-          ? JSON.parse(localStorage.getItem('clinicmind-auth')!).state?.token
-          : null
-
-        if (token) {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          })
-
-          if (response.ok) {
-            const data = await response.json()
-            if (data.user.hospitalId && data.user.hospital?.status === 'verified') {
-              router.push('/dashboard/overview')
-            }
-          }
+        const response = await apiClient.get('/auth/me')
+        const userData = response.data?.data ?? response.data
+        
+        if (userData.hospitalId && userData.hospital?.status === 'verified') {
+          router.replace('/dashboard/overview')
         }
       } catch (error) {
         console.error('Status check failed:', error)
       }
-    }, 30000) // 30 seconds
+    }, 15000) // 15 seconds
 
     return () => clearInterval(interval)
   }, [router])
 
   const handleCheckStatus = async () => {
+    setIsChecking(true)
     try {
-      const token = localStorage.getItem('clinicmind-auth')
-        ? JSON.parse(localStorage.getItem('clinicmind-auth')!).state?.token
-        : null
-
-      if (token) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        })
-
-        if (response.ok) {
-          const data = await response.json()
-          if (data.user.hospitalId && data.user.hospital?.status === 'verified') {
-            router.push('/dashboard/overview')
-          } else {
-            // Show message that still pending
-            alert('Your registration is still under review. Please check back later.')
-          }
-        }
+      const response = await apiClient.get('/auth/me')
+      const userData = response.data?.data ?? response.data
+      
+      if (userData.hospitalId && userData.hospital?.status === 'verified') {
+        router.replace('/dashboard/overview')
+      } else {
+        alert('Your registration is still under review. Please check back later.')
       }
     } catch (error) {
       console.error('Status check failed:', error)
       alert('Failed to check status. Please try again.')
+    } finally {
+      setIsChecking(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0F6E56] to-[#094D3C] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center p-6">
       {/* Logout button */}
       <div className="absolute top-6 right-6">
-        <button
+        <Button
           onClick={logout}
-          className="text-white/80 hover:text-white text-sm font-medium transition-colors"
+          variant="ghost"
+          className="text-white/80 hover:text-white"
         >
           Sign out
-        </button>
+        </Button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-white/[0.1] p-10 max-w-md w-full text-center shadow-2xl">
+      <Card className="w-full max-w-md p-8 text-center">
         {/* Animated hourglass */}
-        <div className="w-20 h-20 rounded-full bg-[#FEF3E2] flex items-center justify-center
-                        mx-auto mb-6">
-          <span className="text-3xl animate-bounce">⏳</span>
+        <div className="w-20 h-20 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-6">
+          <div className="relative">
+            {/* Hourglass animation using CSS */}
+            <div className="w-8 h-8 border-4 border-primary rounded-sm animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+            </div>
+          </div>
         </div>
 
-        <h1 className="font-syne font-bold text-2xl text-[#1A2420] mb-3">
+        <h1 className="text-2xl font-bold text-text1 font-heading mb-3">
           Your registration is under review
         </h1>
 
-        <p className="text-sm text-[#8A9E98] leading-relaxed mb-6">
+        <p className="text-text3 leading-relaxed mb-6">
           Our team will verify your hospital license and approve your account.
           You'll receive an email when approved.
         </p>
 
         {/* Info box */}
-        <div className="bg-[#F4F6F4] rounded-xl p-4 text-left space-y-3 mb-6">
+        <div className="bg-surface rounded-xl p-4 text-left space-y-3 mb-6">
           <div className="flex justify-between text-sm">
-            <span className="text-[#8A9E98]">Hospital name</span>
-            <span className="font-medium text-[#1A2420]">{user?.name || 'Loading...'}</span>
+            <span className="text-text3">Hospital name</span>
+            <span className="font-medium text-text1">{user?.name || 'Loading...'}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-[#8A9E98]">Submitted date</span>
-            <span className="font-medium text-[#1A2420]">{submittedDate}</span>
+            <span className="text-text3">Submitted date</span>
+            <span className="font-medium text-text1">{submittedDate}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-[#8A9E98]">Status</span>
+            <span className="text-text3">Status</span>
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold
-                             px-2.5 py-0.5 rounded-full bg-[#FEF3E2] text-[#B86E0A]">
+                           px-2.5 py-0.5 rounded-full bg-warn text-warn-contrast">
               <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70 animate-pulse"/>
               Pending Review
             </span>
@@ -120,30 +108,31 @@ export default function PendingPage() {
 
         {/* Action buttons */}
         <div className="space-y-3">
-          <button
+          <Button
             onClick={handleCheckStatus}
-            className="w-full bg-[#0F6E56] text-white py-3 rounded-lg font-semibold
-                     hover:bg-[#094D3C] transition-colors"
+            loading={isChecking}
+            className="w-full"
           >
-            Check Status
-          </button>
+            {isChecking ? 'Checking...' : 'Check Status'}
+          </Button>
           
-          <button
-            className="w-full py-3 text-sm text-[#8A9E98] hover:text-[#4A5E58] 
-                     transition-colors"
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => window.open('mailto:support@clinicmind.in')}
           >
             Contact Support
-          </button>
+          </Button>
         </div>
 
         {/* Auto-check indicator */}
         <div className="mt-6 flex items-center justify-center gap-2">
-          <div className="w-2 h-2 bg-[#0F6E56] rounded-full animate-pulse"></div>
-          <p className="text-xs text-[#8A9E98]">
-            Checking automatically every 30 seconds...
+          <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+          <p className="text-xs text-text3">
+            Checking automatically every 15 seconds...
           </p>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }
