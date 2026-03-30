@@ -26,9 +26,16 @@ const QueueTokenSchema = new Schema<IQueueToken>({
   date:                 { type: Date, required: true, default: () => new Date() },
   calledAt:             { type: Date },
   completedAt:          { type: Date },
-}, { timestamps: true })
+}, { 
+  timestamps: true,
+  strict: true,
+  strictQuery: true
+})
 
-QueueTokenSchema.index({ hospitalId: 1, doctorId: 1, date: 1, status: 1 })
-QueueTokenSchema.index({ patientId: 1 })
+// Compound indexes for scale
+QueueTokenSchema.index({ hospitalId: 1, doctorId: 1, date: 1, status: 1 }) // Today's queue per doctor
+QueueTokenSchema.index({ patientId: 1, status: 1 }) // Patient's active token
+// TTL index to auto delete tokens older than 7 days
+QueueTokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 * 7 })
 
 export const QueueToken = mongoose.model<IQueueToken>('QueueToken', QueueTokenSchema)

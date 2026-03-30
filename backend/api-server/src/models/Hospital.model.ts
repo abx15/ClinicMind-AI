@@ -41,11 +41,16 @@ const HospitalSchema = new Schema<IHospital>({
   verifiedAt:      { type: Date },
   verifiedBy:      { type: Schema.Types.ObjectId, ref: 'User' },
   rejectedReason:  { type: String },
-}, { timestamps: true })
+}, { 
+  timestamps: true,
+  strict: true,
+  strictQuery: true
+})
 
-HospitalSchema.index({ status: 1 })
-HospitalSchema.index({ slug: 1 })
-HospitalSchema.index({ adminUserId: 1 })
-HospitalSchema.index({ city: 1, status: 1 })
+// Compound indexes for scale
+HospitalSchema.index({ status: 1, createdAt: -1 }) // For admin pending list sorted by newest
+HospitalSchema.index({ slug: 1 }, { unique: true }) // Unique, for public lookup
+HospitalSchema.index({ city: 1, status: 1 }) // For geographic filtering
+HospitalSchema.index({ adminUserId: 1 }) // For finding hospitals by admin
 
 export const Hospital = mongoose.model<IHospital>('Hospital', HospitalSchema)

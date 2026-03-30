@@ -22,10 +22,15 @@ const AppointmentSchema = new Schema<IAppointment>({
   status:       { type: String, enum: ['booked','confirmed','ongoing','completed','cancelled'], default: 'booked' },
   notes:        { type: String },
   cancelReason: { type: String },
-}, { timestamps: true })
+}, { 
+  timestamps: true,
+  strict: true,
+  strictQuery: true
+})
 
-AppointmentSchema.index({ doctorId: 1, date: 1 })
-AppointmentSchema.index({ patientId: 1 })
-AppointmentSchema.index({ hospitalId: 1, date: 1 })
+// Compound indexes for scale
+AppointmentSchema.index({ patientId: 1, date: -1 }) // Patient's appointments newest first
+AppointmentSchema.index({ doctorId: 1, date: 1, timeSlot: 1 }) // Check slot availability
+AppointmentSchema.index({ hospitalId: 1, date: 1 }) // Hospital's daily schedule
 
 export const Appointment = mongoose.model<IAppointment>('Appointment', AppointmentSchema)

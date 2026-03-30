@@ -36,10 +36,15 @@ const DoctorSchema = new Schema<IDoctor>({
   verifiedAt:      { type: Date },
   inviteToken:     { type: String },
   inviteExpiry:    { type: Date },
-}, { timestamps: true })
+}, { 
+  timestamps: true,
+  strict: true,
+  strictQuery: true
+})
 
-DoctorSchema.index({ hospitalId: 1, isVerified: 1 })
-DoctorSchema.index({ hospitalId: 1, isPublic: 1 })
-DoctorSchema.index({ userId: 1 })
+// Compound indexes for scale
+DoctorSchema.index({ hospitalId: 1, isVerified: 1, isPublic: 1 }) // Public doctor listing
+DoctorSchema.index({ specialization: 1, isPublic: 1 }) // Specialty filtering
+DoctorSchema.index({ userId: 1 }, { unique: true }) // Unique, for doctor profile lookup
 
 export const Doctor = mongoose.model<IDoctor>('Doctor', DoctorSchema)

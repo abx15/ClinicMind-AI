@@ -27,8 +27,8 @@ export const connectDB = async (): Promise<void> => {
         serverSelectionTimeoutMS: 10000,
         socketTimeoutMS: 45000,
         family: 4, // Force IPv4
-        maxPoolSize: 10,
-        minPoolSize: 2,
+        maxPoolSize: 50, // Increased for 1M users
+        minPoolSize: 10, // Increased for better performance
       })
 
       console.log('✅ MongoDB connected successfully')
