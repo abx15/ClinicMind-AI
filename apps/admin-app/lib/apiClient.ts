@@ -21,12 +21,33 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (!error.response) {
+      // Network error — attach a user-friendly message
+      error.userMessage = 'Cannot connect to server. Please check your connection.'
+      return Promise.reject(error)
+    }
+
+    const status = error.response?.status
+
+    if (status === 401) {
       deleteCookie('clinicmind_token')
       if (typeof window !== 'undefined') {
         window.location.href = '/login'
       }
     }
+
+    if (status === 403) {
+      error.userMessage = 'Access denied. You do not have permission to perform this action.'
+    }
+
+    if (status === 404) {
+      error.userMessage = error.response.data?.error || 'Resource not found.'
+    }
+
+    if (status === 500) {
+      error.userMessage = 'Server error. Please try again later.'
+    }
+
     return Promise.reject(error)
   }
 )

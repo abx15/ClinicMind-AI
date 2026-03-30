@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { aiService } from '../services/ai.service';
-import { authenticate } from '../middlewares/auth';
+import { authenticate, AuthRequest } from '../middlewares/auth';
 import { requireRole } from '../middlewares/role';
 import multer from 'multer';
 
@@ -72,13 +72,13 @@ router.post('/drug-check', authenticate, requireRole('doctor'), async (req: Requ
 });
 
 // GET /ai/analytics/demand - Demand analytics (hospital_admin only)
-router.get('/analytics/demand', authenticate, requireRole('hospital_admin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/analytics/demand', authenticate, requireRole('hospital_admin'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { hospitalId } = req.query;
     const { days = 30 } = req.query;
 
     // Use hospitalId from user if not provided
-    const targetHospitalId = hospitalId || req.user.hospitalId;
+    const targetHospitalId = hospitalId || req.user?.hospitalId;
 
     const result = await aiService.getDemandAnalytics(targetHospitalId as string, parseInt(days as string));
     res.json(result);
@@ -88,9 +88,11 @@ router.get('/analytics/demand', authenticate, requireRole('hospital_admin'), asy
 });
 
 // GET /ai/analytics/platform - Platform analytics (superadmin only)
-router.get('/analytics/platform', authenticate, requireRole('superadmin'), async (req: Request, res: Response, next: NextFunction) => {
+router.get('/analytics/platform', authenticate, requireRole('superadmin'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const result = await aiService.getPlatformAnalytics(req.user.role);
+    const { days = 30 } = req.query;
+
+    const result = await aiService.getPlatformAnalytics(parseInt(days as string) || 30);
     res.json(result);
   } catch (error: any) {
     next(error);

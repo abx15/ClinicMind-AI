@@ -33,8 +33,8 @@ export default function FilterChips({ onFilterChange }: FilterChipsProps) {
           onClick={() => handleFilterClick(spec)}
           className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 ${
             activeFilter === spec
-              ? 'bg-primary-500 text-white shadow-md'
-              : 'bg-card border border-border text-text-secondary hover:border-primary-500 hover:text-primary-500'
+              ? 'bg-primary text-white shadow-md'
+              : 'bg-card border border-border text-text-2 hover:border-primary hover:text-primary'
           }`}
         >
           {spec}

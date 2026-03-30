@@ -17,6 +17,7 @@ import prescriptionRoutes from './routes/prescription.routes'
 import whatsappRoutes from './routes/whatsapp.routes'
 import aiRoutes from './routes/ai.routes'
 import billingRoutes from './routes/billing.routes'
+import adminRoutes from './routes/admin.routes'
 import { registerSocketHandlers } from './socket'
 
 const app = express()
@@ -65,6 +66,7 @@ app.use('/api/v1/prescriptions', prescriptionRoutes)
 app.use('/api/v1/whatsapp', whatsappRoutes)
 app.use('/api/v1/ai', aiRoutes)
 app.use('/api/v1/billing', billingRoutes)
+app.use('/api/v1/admin',   adminRoutes)
 
 // 404 handler
 app.use((req, res) => {

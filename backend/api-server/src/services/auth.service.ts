@@ -96,4 +96,29 @@ export const authService = {
     }
     return user.toSafeObject()
   },
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await User.findById(userId)
+    if (!user) {
+      throw { status: 404, message: 'User not found' }
+    }
+
+    if (!user.passwordHash) {
+      throw { status: 400, message: 'No password set for this account' }
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.passwordHash)
+    if (!isMatch) {
+      throw { status: 401, message: 'Current password is incorrect' }
+    }
+
+    if (newPassword.length < 8) {
+      throw { status: 400, message: 'New password must be at least 8 characters long' }
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 12)
+    await User.findByIdAndUpdate(userId, { passwordHash: newPasswordHash })
+
+    return { success: true }
+  },
 }

@@ -19,7 +19,7 @@ const navItems = [
     section: 'Business',
     items: [
       { label: 'Analytics',   href: '/dashboard/analytics',         icon: ChartIcon    },
-      { label: 'Billing/MRR', href: '/dashboard/analytics#billing', icon: CurrencyIcon },
+      { label: 'Billing/MRR', href: '/dashboard/analytics', icon: CurrencyIcon },
       { label: 'Settings',    href: '/dashboard/settings',          icon: SettingsIcon  },
     ],
   },
