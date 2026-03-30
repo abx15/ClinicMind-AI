@@ -20,7 +20,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/hospitals', label: 'Hospitals' },
-    { href: '/search', label: 'Doctors' },
+    { href: '/doctors', label: 'Doctors' },
     { href: '/search', label: 'Specializations' },
   ]
 

@@ -14,4 +14,10 @@ export interface Hospital {
   verifiedAt?: Date
   verifiedBy?: string
   createdAt: Date
+  // Additional fields for UI
+  doctorCount?: number
+  specializations?: string[]
+  phone?: string
+  email?: string
+  description?: string
 }

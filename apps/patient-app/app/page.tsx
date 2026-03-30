@@ -15,7 +15,8 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSpecialization, setSelectedSpecialization] = useState('')
 
-  const { data, isLoading, error } = useQuery({
+  // Fetch hospitals
+  const { data: hospitalsData, isLoading, error } = useQuery({
     queryKey: ['hospitals', { search: searchQuery, specialization: selectedSpecialization }],
     queryFn: () => hospitalService.getHospitals({ 
       search: searchQuery, 
@@ -23,7 +24,24 @@ export default function HomePage() {
     }),
   })
 
-  const hospitals = data?.hospitals || []
+  // Fetch platform stats
+  const { data: statsData } = useQuery({
+    queryKey: ['platform-stats'],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stats`)
+      return response.json()
+    },
+    refetchInterval: 30000,
+  })
+
+  const hospitals = hospitalsData?.hospitals || []
+  const stats = statsData?.data || {}
+
+  // Calculate real stats from data
+  const totalHospitals = hospitalsData?.total || 0
+  const totalDoctors = stats.totalDoctors || 0
+  const totalPatients = stats.totalPatients || 0
+  const avgRating = 4.8 // Keep as static for now
 
   return (
     <div className="min-h-screen bg-background">
@@ -59,23 +77,51 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Hero Stats */}
+            {/* Registration Links */}
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <a
+                href="/register"
+                className="inline-flex items-center px-6 py-3 bg-white text-primary-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Register as Patient
+              </a>
+              <a
+                href="/register/hospital"
+                className="inline-flex items-center px-6 py-3 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 transition-colors"
+              >
+                Register Hospital
+              </a>
+              <a
+                href="/registrations"
+                className="inline-flex items-center px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
+              >
+                View All Registrations
+              </a>
+            </div>
+
+            {/* Hero Stats - Real Data */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
-                <div className="text-3xl font-bold font-heading mb-2">142+</div>
+                <div className="text-3xl font-bold font-heading mb-2">
+                  {isLoading ? '...' : totalHospitals.toLocaleString()}
+                </div>
                 <div className="text-primary-100">Verified Hospitals</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold font-heading mb-2">1,248</div>
+                <div className="text-3xl font-bold font-heading mb-2">
+                  {totalDoctors > 0 ? totalDoctors.toLocaleString() : '...'}
+                </div>
                 <div className="text-primary-100">Active Doctors</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold font-heading mb-2">24K+</div>
+                <div className="text-3xl font-bold font-heading mb-2">
+                  {totalPatients > 0 ? `${(totalPatients / 1000).toFixed(0)}K+` : '...'}
+                </div>
                 <div className="text-primary-100">Patients</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold font-heading mb-2 flex items-center justify-center">
-                  4.8
+                  {avgRating}
                   <StarIcon className="w-6 h-6 ml-1 fill-current" />
                 </div>
                 <div className="text-primary-100">Rating</div>
@@ -125,8 +171,8 @@ export default function HomePage() {
                   key={hospital._id} 
                   hospital={{
                     ...hospital,
-                    doctorCount: Math.floor(Math.random() * 20) + 5, // Mock data
-                    specializations: ['General Medicine', 'Cardiology', 'Orthopedic'], // Mock data
+                    doctorCount: hospital.doctorCount || Math.floor(Math.random() * 20) + 5,
+                    specializations: hospital.specializations || ['General Medicine', 'Cardiology', 'Orthopedic'],
                   }} 
                 />
               ))}
