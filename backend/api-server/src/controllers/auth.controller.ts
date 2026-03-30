@@ -39,4 +39,17 @@ export const authController = {
     // JWT is stateless — client deletes the token
     sendSuccess(res, null, 200, 'Logged out successfully')
   },
+
+  async changePassword(req: AuthRequest, res: Response) {
+    try {
+      const { currentPassword, newPassword } = req.body
+      if (!currentPassword || !newPassword) {
+        return sendError(res, 'Current password and new password are required')
+      }
+      const result = await authService.changePassword(req.user!.userId, currentPassword, newPassword)
+      sendSuccess(res, result, 200, 'Password changed successfully')
+    } catch (err: any) {
+      sendError(res, err.message || 'Failed to change password', err.status || 400)
+    }
+  },
 }

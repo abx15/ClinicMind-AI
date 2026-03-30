@@ -45,7 +45,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user:            null,
       token:           null,
-      isLoading:       false,
+      isLoading:       true, // Start with loading true during hydration
       isAuthenticated: false,
 
       setAuth: (user, token) =>
@@ -65,6 +65,12 @@ export const useAuthStore = create<AuthState>()(
       name: 'clinicmind-admin-auth',
       storage: createJSONStorage(() => safeLocalStorage),
       partialize: (s) => ({ user: s.user, token: s.token }),
+      onRehydrateStorage: () => (state) => {
+        // Set loading to false after hydration
+        if (state) {
+          state.setLoading(false)
+        }
+      },
     }
   )
 )

@@ -16,6 +16,7 @@ export default function DashboardLayout({
   const isLoading       = useAuthStore(s => s.isLoading)
 
   useEffect(() => {
+    // Only redirect if we're done loading and not authenticated
     if (!isLoading && !isAuthenticated) {
       router.push('/login')
     }
@@ -24,11 +25,11 @@ export default function DashboardLayout({
   // While the store is hydrating (SSR → client), show spinner
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F4F6F4] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0B2920] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-[#0F6E56] border-t-transparent
                           rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-sm text-[#8A9E98]">Loading...</p>
+          <p className="text-sm text-white/80">Loading...</p>
         </div>
       </div>
     )
@@ -36,7 +37,13 @@ export default function DashboardLayout({
 
   // Not authenticated yet — don't render (redirect fires in useEffect)
   if (!isAuthenticated || !user) {
-    return null
+    return (
+      <div className="min-h-screen bg-[#0B2920] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-white/60">Redirecting to login...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
